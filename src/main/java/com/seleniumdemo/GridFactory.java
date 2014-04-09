@@ -35,7 +35,7 @@ public class GridFactory {
 		capability.setCapability("takeScreenshot", true);
 		capability.setPlatform(Platform.VISTA);
 		capability.setBrowserName("internet explorer");
-		capability.setVersion(version);
+		//capability.setVersion(version);
 		capability
 				.setCapability(
 						InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,
@@ -61,7 +61,7 @@ public class GridFactory {
 		DesiredCapabilities capability = DesiredCapabilities.firefox();
 		capability.setCapability("takeScreenshot", true);
 		capability.setPlatform(Platform.VISTA);
-		capability.setVersion("18");
+		//capability.setVersion("18");
 
 		WebDriver driver = null;
 
