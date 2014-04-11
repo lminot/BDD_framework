@@ -33,10 +33,10 @@ public class HubDemo implements Runnable {
 		for (int threads = 0; threads < testThreads; threads++) {
 			Thread t1 = new Thread(new HubDemo(HubDemo.BROWSER_CHROME));
 			t1.start();
-			Thread t2 = new Thread(new HubDemo(HubDemo.BROWSER_FIREFOX));
-			t2.start();
-			Thread t3 = new Thread(new HubDemo(HubDemo.BROWSER_INTERNET_EXPLORER));
-			t3.start();
+//			Thread t2 = new Thread(new HubDemo(HubDemo.BROWSER_FIREFOX));
+//			t2.start();
+//			Thread t3 = new Thread(new HubDemo(HubDemo.BROWSER_INTERNET_EXPLORER));
+//			t3.start();
 //			Thread t4 = new Thread(new HubDemo(HubDemo.BROWSER_PHANTOMJS));
 //			t4.start();
 			Thread.sleep(500);

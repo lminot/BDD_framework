@@ -13,7 +13,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class GridFactory {
 
-	private static final String hubURL = "http://jenkins1.mgmt.tools1.coresys.tmcs:4444/wd/hub";
+	private static final String hubURL = "http://localhost:4444/wd/hub";
 
 	private GridFactory() {
 	}
@@ -33,7 +33,6 @@ public class GridFactory {
 	public static WebDriver getInternetExplorerInstance(String version) throws Exception {
 		DesiredCapabilities capability = DesiredCapabilities.internetExplorer();
 		capability.setCapability("takeScreenshot", true);
-		capability.setPlatform(Platform.VISTA);
 		capability.setBrowserName("internet explorer");
 		//capability.setVersion(version);
 		capability
@@ -88,7 +87,6 @@ public class GridFactory {
 
 		capability.setCapability(ChromeOptions.CAPABILITY, options);
 		capability.setCapability("takeScreenshot", true);
-		capability.setPlatform(Platform.VISTA);
 
 		WebDriver driver = null;
 
@@ -116,7 +114,6 @@ public class GridFactory {
 
 		capability.setCapability(ChromeOptions.CAPABILITY, options);
 		capability.setCapability("takeScreenshot", true);
-		capability.setPlatform(Platform.VISTA);
 
 
 		WebDriver driver = null;
