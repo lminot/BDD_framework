@@ -115,7 +115,6 @@ public class GridFactory {
 		capability.setCapability(ChromeOptions.CAPABILITY, options);
 		capability.setCapability("takeScreenshot", true);
 
-
 		WebDriver driver = null;
 
 		try {

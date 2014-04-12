@@ -24,17 +24,22 @@ public class SeleniumSteps {
 	
 	@Given("^that I have loaded ticketmaster.com in a browser$")
 	public void that_I_have_loaded_ticketmaster_com_in_a_browser() throws Exception {
-		WebDriver driver = GridFactory.getChrome27Instance();
+		WebDriver driver = GridFactory.getFirefox18Instance();
 		this.driver = new Augmenter().augment(driver);
 	}
 
 	@When("^search for the term \"([^\"]*)\"$")
 	public void search_for_the_term(String arg1) throws Exception {
-		driver.get("http://www.google.com");
+		driver.get("http://www.ticketmaster.com/");
+		
 		WebElement element = driver.findElement(By.name("q"));
+		Thread.sleep(1000);
+		
 		element.sendKeys(arg1);
+		Thread.sleep(1000);
+		
 		element.submit();
-		Thread.sleep(3000);
+		Thread.sleep(5000);
 		byte[] screenshot = ((TakesScreenshot) driver)
 				.getScreenshotAs(OutputType.BYTES);
 		screenGrabs.add(screenshot);
@@ -42,6 +47,7 @@ public class SeleniumSteps {
 
 	@Then("^I should get a page that looks like this$")
 	public void I_should_get_a_page_that_looks_like_this() {
+		driver.close();
 		driver.quit();
 	}
 	
