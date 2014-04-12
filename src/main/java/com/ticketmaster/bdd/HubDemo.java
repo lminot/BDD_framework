@@ -1,4 +1,4 @@
-package com.seleniumdemo;
+package com.ticketmaster.bdd;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
@@ -9,6 +9,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.Augmenter;
+
+import com.ticketmaster.bdd.util.GridFactory;
 
 public class HubDemo implements Runnable {
 

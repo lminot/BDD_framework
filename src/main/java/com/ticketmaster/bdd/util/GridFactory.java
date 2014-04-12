@@ -1,4 +1,4 @@
-package com.seleniumdemo;
+package com.ticketmaster.bdd.util;
 
 import java.net.MalformedURLException;
 import java.net.URL;
