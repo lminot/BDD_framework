@@ -22,22 +22,23 @@ public class SeleniumSteps {
 	private List<byte[]> screenGrabs = new ArrayList<byte[]>();
 	private WebDriver driver;
 	
-	@Given("^that I have loaded ticketmaster.com in a browser$")
-	public void that_I_have_loaded_ticketmaster_com_in_a_browser() throws Exception {
-		WebDriver driver = GridFactory.getFirefox18Instance();
+	@Given("^that I have loaded ticketmaster.com in a \"([^\"]*)\"$")
+	public void that_I_have_loaded_ticketmaster_com_in_a(String browser) throws Throwable {
+	    
+		WebDriver driver = null; 
+		if(browser.toLowerCase().equals("firefox")){
+			driver = GridFactory.getFirefoxInstance();
+		}else if(browser.toLowerCase().equals("chrome")){
+			driver = GridFactory.getChromeInstance();
+		}
 		this.driver = new Augmenter().augment(driver);
 	}
 
 	@When("^search for the term \"([^\"]*)\"$")
 	public void search_for_the_term(String arg1) throws Exception {
 		driver.get("http://www.ticketmaster.com/");
-		
 		WebElement element = driver.findElement(By.name("q"));
-		Thread.sleep(1000);
-		
 		element.sendKeys(arg1);
-		Thread.sleep(1000);
-		
 		element.submit();
 		Thread.sleep(5000);
 		byte[] screenshot = ((TakesScreenshot) driver)

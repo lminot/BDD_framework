@@ -67,7 +67,7 @@ public class HubDemo implements Runnable {
 
 	private void runFirefox(String screenshot) throws Exception {
 
-		WebDriver driver = GridFactory.getFirefox18Instance();
+		WebDriver driver = GridFactory.getFirefoxInstance();
 		driver = new Augmenter().augment(driver);
 
 		driver.get("http://www.google.com");
@@ -82,31 +82,11 @@ public class HubDemo implements Runnable {
 		
 		driver.quit();
 	}
-
-	private void runChrome(String screenshot) throws Exception {
-
-		
-		WebDriver driver = GridFactory.getChrome27Instance();
-		driver = new Augmenter().augment(driver);
-
-		driver.get("http://www.google.com");
-		WebElement element = driver.findElement(By.name("q"));
-		element.sendKeys("Cheese!");
-		element.submit();
-		Thread.sleep(3000);
-		File scrFile = ((TakesScreenshot) driver)
-				.getScreenshotAs(OutputType.FILE);
-
-		FileUtils
-				.copyFile(scrFile, new File( IMAGE_OUTPUT_LOCATION + screenshot + ".png"));
-		
-		driver.quit();
-	}
-
+	
 	private void runChrome2(String screenshot) throws Exception {
 
 		
-		WebDriver driver = GridFactory.getChrome28Instance();
+		WebDriver driver = GridFactory.getChromeInstance();
 		driver = new Augmenter().augment(driver);
 
 		driver.get("http://www.google.com");
