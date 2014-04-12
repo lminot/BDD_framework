@@ -6,4 +6,5 @@ Feature: Open ticketmaster.com on a web browser and surf arount
   When search for the term "Book of Mormon"
   Then I should get a page that looks like this
   
+  @smoke
   Scenario: Search for Book of Mormon
