@@ -15,7 +15,7 @@ import cucumber.api.junit.Cucumber;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-		format={"json", "json:target/results.json"},
+		format={"pretty", "html:target/results"},
 		features="src/test/resources/com/ticketmaster/bdd/acceptance",
 		glue={"com.ticketmsater.bdd.stepdefs"},
 		tags={"@smoke"}

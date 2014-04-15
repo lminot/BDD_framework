@@ -21,24 +21,29 @@ import cucumber.api.java.en.When;
 public class SeleniumSteps {
 	private List<byte[]> screenGrabs = new ArrayList<byte[]>();
 	private WebDriver driver;
+	private String website;
 	
-	@Given("^that I have loaded ticketmaster.com in a \"([^\"]*)\"$")
-	public void that_I_have_loaded_ticketmaster_com_in_a(String browser) throws Throwable {
-	    
-		WebDriver driver = null; 
+	@Given("^that I have loaded \"([^\"]*)\" in a \"([^\"]*)\"$")
+	public void that_I_have_loaded_in_a(String website, String browser) throws Throwable {
+		WebDriver driver = null;
+		this.website = website;
 		if(browser.toLowerCase().equals("firefox")){
 			driver = GridFactory.getFirefoxInstance();
 		}else if(browser.toLowerCase().equals("chrome")){
 			driver = GridFactory.getChromeInstance();
+		}else if(browser.toLowerCase().equals("phantomjs")){
+			driver = GridFactory.getPhantomJSInstance();
 		}
 		this.driver = new Augmenter().augment(driver);
 	}
 
 	@When("^search for the term \"([^\"]*)\"$")
 	public void search_for_the_term(String arg1) throws Exception {
-		driver.get("http://www.ticketmaster.com/");
+		driver.get("http://" + website);
 		WebElement element = driver.findElement(By.name("q"));
-		element.sendKeys(arg1);
+		for(char c : arg1.toCharArray()){
+			element.sendKeys(String.valueOf(c));
+		}
 		element.submit();
 		Thread.sleep(5000);
 		byte[] screenshot = ((TakesScreenshot) driver)
