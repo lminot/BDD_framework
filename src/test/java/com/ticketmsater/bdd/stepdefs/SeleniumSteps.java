@@ -35,11 +35,13 @@ public class SeleniumSteps {
 			driver = GridFactory.getPhantomJSInstance();
 		}
 		this.driver = new Augmenter().augment(driver);
+		this.driver.get("http://" + website);
+		Thread.sleep(30000);
 	}
 
 	@When("^search for the term \"([^\"]*)\"$")
 	public void search_for_the_term(String arg1) throws Exception {
-		driver.get("http://" + website);
+		
 		WebElement element = driver.findElement(By.name("q"));
 		for(char c : arg1.toCharArray()){
 			element.sendKeys(String.valueOf(c));
