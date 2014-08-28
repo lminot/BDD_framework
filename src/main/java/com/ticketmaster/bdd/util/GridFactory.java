@@ -30,8 +30,8 @@ public class GridFactory {
 		return getInternetExplorerInstance("10");
 	}
 	
-	public static WebDriver getInternetExplorer11Instance() throws Exception {
-		return getInternetExplorerInstance("11");
+	public static WebDriver getInternetExplorerInstance() throws Exception {
+		return getInternetExplorerInstance("10");
 	}
 
 	public static WebDriver getInternetExplorerInstance(String version) throws Exception {
@@ -39,7 +39,7 @@ public class GridFactory {
 		capability.setCapability("takeScreenshot", true);
 		capability.setPlatform(Platform.WINDOWS);
 		capability.setBrowserName("internet explorer");
-		//capability.setVersion(version);
+
 		capability
 				.setCapability(
 						InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,
@@ -70,11 +70,6 @@ public class GridFactory {
 		try {
 			driver = new RemoteWebDriver(new URL(hubURL), capability);
 		} catch (MalformedURLException me) {
-			// Change to logger
-			System.out
-					.println("Please check "
-							+ hubURL
-							+ " as it is specified to be the Selenium Hub URL but it's not responding correctly.");
 			throw new Exception("Cannot connect to the Grid.");
 		}
 

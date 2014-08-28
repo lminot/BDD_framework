@@ -31,11 +31,11 @@ public class HubDemo implements Runnable {
 	public static void main(String[] args) throws Exception {
 
 		// Number of concurrent browsers of each type
-		Integer testThreads = 12;
+		Integer testThreads = 1;
 		
 		for (int threads = 0; threads < testThreads; threads++) {
-			Thread t1 = new Thread(new HubDemo(HubDemo.BROWSER_CHROME));
-			t1.start();
+//			Thread t1 = new Thread(new HubDemo(HubDemo.BROWSER_CHROME));
+//			t1.start();
 //			Thread t2 = new Thread(new HubDemo(HubDemo.BROWSER_FIREFOX));
 //			t2.start();
 //			Thread t3 = new Thread(new HubDemo(HubDemo.BROWSER_INTERNET_EXPLORER));

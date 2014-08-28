@@ -33,8 +33,8 @@ public class SeleniumSteps {
 			driver = GridFactory.getChromeInstance();
 		}else if(browser.toLowerCase().equals("phantomjs")){
 			driver = GridFactory.getPhantomJSInstance();
-		}else if(browser.toLowerCase().equals("iexplore")){
-			driver = GridFactory.getInternetExplorer11Instance();
+		}else if(browser.toLowerCase().equals("internet explorer")){
+			driver = GridFactory.getInternetExplorerInstance();
 		}
 		this.driver = new Augmenter().augment(driver);
 	}
@@ -55,7 +55,7 @@ public class SeleniumSteps {
 			element.sendKeys(String.valueOf(c));
 		}
 		element.submit();
-		Thread.sleep(5000);
+		Thread.sleep(2000);
 		byte[] screenshot = ((TakesScreenshot) driver)
 				.getScreenshotAs(OutputType.BYTES);
 		screenGrabs.add(screenshot);
