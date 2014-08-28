@@ -33,8 +33,16 @@ public class SeleniumSteps {
 			driver = GridFactory.getChromeInstance();
 		}else if(browser.toLowerCase().equals("phantomjs")){
 			driver = GridFactory.getPhantomJSInstance();
+		}else if(browser.toLowerCase().equals("iexplore")){
+			driver = GridFactory.getInternetExplorer11Instance();
 		}
 		this.driver = new Augmenter().augment(driver);
+	}
+	
+	@When("^I load a page")
+	public void search_for_the_term() throws Exception {
+		this.driver.get("http://" + website);
+		this.driver.close();
 	}
 
 	@When("^search for the term \"([^\"]*)\"$")

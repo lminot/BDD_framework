@@ -1,5 +1,6 @@
 package com.ticketmaster.bdd;
 import java.io.File;
+import java.util.Random;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
@@ -30,7 +31,7 @@ public class HubDemo implements Runnable {
 	public static void main(String[] args) throws Exception {
 
 		// Number of concurrent browsers of each type
-		Integer testThreads = 1;
+		Integer testThreads = 12;
 		
 		for (int threads = 0; threads < testThreads; threads++) {
 			Thread t1 = new Thread(new HubDemo(HubDemo.BROWSER_CHROME));
@@ -51,11 +52,16 @@ public class HubDemo implements Runnable {
 
 		driver = new Augmenter().augment(driver);
 
-		driver.get("http://www.google.com");
-		WebElement element = driver.findElement(By.name("q"));
-		element.sendKeys("Cheese!");
+		driver.get("http://www.ticketmaster.com/");
+		for(int i=0; i<5; i++){
+		  if(driver.findElement(By.name("q")).isDisplayed()){
+		    break;
+		  }
+		  Thread.sleep(50);
+		}
+        WebElement element = driver.findElement(By.name("q"));
+        element.sendKeys("Garth Brooks");
 		element.submit();
-		Thread.sleep(2000);
 		File scrFile = ((TakesScreenshot) driver)
 				.getScreenshotAs(OutputType.FILE);
 

@@ -3,6 +3,7 @@ package com.ticketmaster.bdd.util;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -12,8 +13,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class GridFactory {
 
-	private static final String hubURL = "http://jenkins1.mgmt.tools1.coresys.tmcs:4444/wd/hub";
-	//private static final String hubURL = "http://localhost:4444/wd/hub";
+	private static final String hubURL = "http://pmp.tm.tmcs:3306/wd/hub";
 	
 	private GridFactory() {
 	}
@@ -29,10 +29,15 @@ public class GridFactory {
 	public static WebDriver getInternetExplorer10Instance() throws Exception {
 		return getInternetExplorerInstance("10");
 	}
+	
+	public static WebDriver getInternetExplorer11Instance() throws Exception {
+		return getInternetExplorerInstance("11");
+	}
 
 	public static WebDriver getInternetExplorerInstance(String version) throws Exception {
 		DesiredCapabilities capability = DesiredCapabilities.internetExplorer();
 		capability.setCapability("takeScreenshot", true);
+		capability.setPlatform(Platform.WINDOWS);
 		capability.setBrowserName("internet explorer");
 		//capability.setVersion(version);
 		capability
