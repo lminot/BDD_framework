@@ -42,10 +42,9 @@ public class SeleniumSteps {
 	@When("^I load a page")
 	public void search_for_the_term() throws Exception {
 		this.driver.get("http://" + website);
-		this.driver.close();
 	}
 
-	@When("^search for the term \"([^\"]*)\"$")
+	@Then("^search for the term \"([^\"]*)\"$")
 	public void search_for_the_term(String arg1) throws Exception {
 
 		this.driver.get("http://" + website);
@@ -72,5 +71,6 @@ public class SeleniumSteps {
 	    for(byte[] screenshot : screenGrabs){
 	        scenario.embed(screenshot, "image/png");
 	    }
+	    this.driver.close();
 	}
 }
