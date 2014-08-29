@@ -3,6 +3,8 @@ package com.ticketmsater.bdd.stepdefs;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.TestCase;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -46,6 +48,7 @@ public class SeleniumSteps {
     } catch (Exception e) {
       byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
       screenGrabs.add(screenshot);
+      TestCase.assertTrue(false);
     }
   }
 
@@ -65,6 +68,7 @@ public class SeleniumSteps {
     } catch (Exception e) {
       byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
       screenGrabs.add(screenshot);
+      TestCase.assertTrue(false);
     }
   }
 
