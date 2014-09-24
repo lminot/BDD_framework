@@ -11,6 +11,7 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.Augmenter;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.ticketmaster.bdd.util.GridFactory;
 
@@ -39,6 +40,7 @@ public class SeleniumSteps {
       driver = GridFactory.getInternetExplorerInstance();
     }
     this.driver = new Augmenter().augment(driver);
+    System.out.println(((RemoteWebDriver) this.driver).getSessionId());
   }
 
   @When("^I load a page")

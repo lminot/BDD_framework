@@ -13,7 +13,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class GridFactory {
 
-	private static final String hubURL = "http://10.1.210.77:4444/wd/hub";
+	private static final String hubURL = "http://10.1.210.52:4444/wd/hub";
 	
 	private GridFactory() {
 	}
@@ -72,7 +72,7 @@ public class GridFactory {
 		} catch (MalformedURLException me) {
 			throw new Exception("Cannot connect to the Grid.");
 		}
-
+		driver.manage().window().maximize();
 		driver = new Augmenter().augment(driver);
 		return driver;
 	}
