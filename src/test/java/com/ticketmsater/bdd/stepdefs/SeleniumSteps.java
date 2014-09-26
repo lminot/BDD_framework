@@ -40,7 +40,6 @@ public class SeleniumSteps {
       driver = GridFactory.getInternetExplorerInstance();
     }
     this.driver = new Augmenter().augment(driver);
-    System.out.println(((RemoteWebDriver) this.driver).getSessionId());
   }
 
   @When("^I load a page")
@@ -76,9 +75,18 @@ public class SeleniumSteps {
 
   @After
   public void embedScreenshot(Scenario scenario) {
+    /*
     for (byte[] screenshot : screenGrabs) {
       scenario.embed(screenshot, "image/png");
     }
+    */
+    
+    String embedHtml = "<video width='640' height='480' preload='none' controls='controls'><source src='http://10.1.210.52/videos/" + getSessionId() + ".mp4' type='video/mp4; codecs=&quot;theora, vorbis&quot;' autostart='false'></video>";
+    scenario.write(embedHtml);
     this.driver.close();
+  }
+  
+  private String getSessionId(){
+    return ((RemoteWebDriver) this.driver).getSessionId().toString();
   }
 }
