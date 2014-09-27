@@ -75,14 +75,13 @@ public class SeleniumSteps {
 
   @After
   public void embedScreenshot(Scenario scenario) {
-    /*
+   
     for (byte[] screenshot : screenGrabs) {
       scenario.embed(screenshot, "image/png");
     }
-    */
-    
-    String embedHtml = "<video width='640' height='480' preload='none' controls='controls'><source src='http://10.1.210.52/videos/" + getSessionId() + ".mp4' type='video/mp4; codecs=&quot;theora, vorbis&quot;' autostart='false'></video>";
-    scenario.write(embedHtml);
+   
+//    String embedHtml = "<video width='640' height='480' preload='none' controls='controls'><source src='http://10.1.210.52/videos/" + getSessionId() + ".mp4' type='video/mp4; codecs=&quot;theora, vorbis&quot;' autostart='false'></video>";
+//    scenario.write(embedHtml);
     this.driver.close();
   }
   

@@ -13,7 +13,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class GridFactory {
 
-	private static final String hubURL = "http://10.1.210.52:4444/wd/hub";
+	private static final String hubURL = "http://10.1.210.77:4444/wd/hub";
 	
 	private GridFactory() {
 	}
@@ -49,11 +49,6 @@ public class GridFactory {
 		try {
 			driver = new RemoteWebDriver(new URL(hubURL), capability);
 		} catch (MalformedURLException me) {
-			// Change to logger
-			System.out
-					.println("Please check "
-							+ hubURL
-							+ " as it is specified to be the Selenium Hub URL but it's not responding correctly.");
 			throw new Exception("Cannot connect to the Grid.");
 		}
 
@@ -91,11 +86,6 @@ public class GridFactory {
 		try {
 			driver = new RemoteWebDriver(new URL(hubURL), capability);
 		} catch (MalformedURLException me) {
-			// Change to logger
-			System.out
-					.println("Please check "
-							+ hubURL
-							+ " as it is specified to be the Selenium Hub URL but it's not responding correctly.");
 			throw new Exception("Cannot connect to the Grid.");
 		}
 
