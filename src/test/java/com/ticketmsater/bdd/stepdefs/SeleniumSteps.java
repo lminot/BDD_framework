@@ -26,7 +26,7 @@ public class SeleniumSteps {
   private WebDriver driver;
   private String website;
 
-  @Given("^that I have loaded \"([^\"]*)\" in a \"([^\"]*)\"$")
+  @Given(value="^that I have loaded \"([^\"]*)\" in a \"([^\"]*)\"$", timeout=60000)
   public void that_I_have_loaded_in_a(String website, String browser) throws Throwable {
     WebDriver driver = null;
     this.website = website;
@@ -42,7 +42,7 @@ public class SeleniumSteps {
     this.driver = new Augmenter().augment(driver);
   }
 
-  @When("^I load a page")
+  @When(value="^I load a page", timeout=60000)
   public void search_for_the_term() throws Exception {
     try {
       this.driver.get("http://" + website);
@@ -53,7 +53,7 @@ public class SeleniumSteps {
     }
   }
 
-  @Then("^search for the term \"([^\"]*)\"$")
+  @Then(value="^search for the term \"([^\"]*)\"$", timeout=60000)
   public void search_for_the_term(String arg1) throws Exception {
     try {
       this.driver.get("http://" + website);
