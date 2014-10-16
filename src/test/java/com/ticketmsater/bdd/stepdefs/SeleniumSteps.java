@@ -5,6 +5,8 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -25,37 +27,45 @@ public class SeleniumSteps {
   private List<byte[]> screenGrabs = new ArrayList<byte[]>();
   private WebDriver driver;
   private String website;
-
-  @Given(value="^that I have loaded \"([^\"]*)\" in a \"([^\"]*)\"$", timeout=60000)
+  Logger logger = Log.getLogger(SeleniumSteps.class);
+  private GridFactory gridFactory = new GridFactory();
+  
+  @Given("^that I have loaded \"([^\"]*)\" in a \"([^\"]*)\"$")
   public void that_I_have_loaded_in_a(String website, String browser) throws Throwable {
+    logger.info("Getting a new browser");
     WebDriver driver = null;
     this.website = website;
     if (browser.toLowerCase().equals("firefox")) {
-      driver = GridFactory.getFirefoxInstance();
+      driver = gridFactory.getFirefoxInstance();
+      logger.info("Returning instance of a firefox browser");
     } else if (browser.toLowerCase().equals("chrome")) {
-      driver = GridFactory.getChromeInstance();
-    } else if (browser.toLowerCase().equals("phantomjs")) {
-      driver = GridFactory.getPhantomJSInstance();
+      driver = gridFactory.getChromeInstance();
+      logger.info("Returning instance of a chrome browser");
     } else if (browser.toLowerCase().equals("internet explorer")) {
-      driver = GridFactory.getInternetExplorerInstance();
+      driver = gridFactory.getInternetExplorerInstance();
+      logger.info("Returning instance of a internet explorer browser");
     }
     this.driver = new Augmenter().augment(driver);
   }
 
-  @When(value="^I load a page", timeout=60000)
+  @When("^I load a page")
   public void search_for_the_term() throws Exception {
     try {
+      logger.info("Retrieving webpage");
       this.driver.get("http://" + website);
+      logger.info("Webpage returned");
     } catch (Exception e) {
       byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
       screenGrabs.add(screenshot);
       TestCase.assertTrue(false);
+      logger.info("Webpage failed");
     }
   }
 
-  @Then(value="^search for the term \"([^\"]*)\"$", timeout=60000)
+  @Then("^search for the term \"([^\"]*)\"$")
   public void search_for_the_term(String arg1) throws Exception {
     try {
+      logger.info("Submitting search " + arg1);
       this.driver.get("http://" + website);
 
       WebElement element = driver.findElement(By.name("q"));
@@ -64,9 +74,11 @@ public class SeleniumSteps {
       }
       element.submit();
       Thread.sleep(2000);
+      logger.info("Search submitted");
       byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
       screenGrabs.add(screenshot);
     } catch (Exception e) {
+      logger.warn(e.getMessage());
       byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
       screenGrabs.add(screenshot);
       TestCase.assertTrue(false);
@@ -75,17 +87,20 @@ public class SeleniumSteps {
 
   @After
   public void embedScreenshot(Scenario scenario) {
-   
+
     for (byte[] screenshot : screenGrabs) {
       scenario.embed(screenshot, "image/png");
     }
-   
-//    String embedHtml = "<video width='640' height='480' preload='none' controls='controls'><source src='http://10.1.210.52/videos/" + getSessionId() + ".mp4' type='video/mp4; codecs=&quot;theora, vorbis&quot;' autostart='false'></video>";
-//    scenario.write(embedHtml);
+
+    // String embedHtml =
+    // "<video width='640' height='480' preload='none' controls='controls'><source src='http://10.1.210.52/videos/"
+    // + getSessionId() +
+    // ".mp4' type='video/mp4; codecs=&quot;theora, vorbis&quot;' autostart='false'></video>";
+    // scenario.write(embedHtml);
     this.driver.close();
   }
-  
-  private String getSessionId(){
+
+  private String getSessionId() {
     return ((RemoteWebDriver) this.driver).getSessionId().toString();
   }
 }
