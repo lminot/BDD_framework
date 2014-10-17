@@ -13,9 +13,9 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.Augmenter;
-import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.ticketmaster.bdd.util.GridFactory;
+import com.ticketmaster.testclient.TestClient;
 
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
@@ -30,11 +30,16 @@ public class SeleniumSteps {
   Logger logger = Log.getLogger(SeleniumSteps.class);
   private GridFactory gridFactory = new GridFactory();
   
+  private Integer stepsPassed = 0;
+
   @Given("^that I have loaded \"([^\"]*)\" in a \"([^\"]*)\"$")
   public void that_I_have_loaded_in_a(String website, String browser) throws Throwable {
     logger.info("Getting a new browser");
     WebDriver driver = null;
     this.website = website;
+ 
+    long current = System.currentTimeMillis();
+ 
     if (browser.toLowerCase().equals("firefox")) {
       driver = gridFactory.getFirefoxInstance();
       logger.info("Returning instance of a firefox browser");
@@ -46,6 +51,10 @@ public class SeleniumSteps {
       logger.info("Returning instance of a internet explorer browser");
     }
     this.driver = new Augmenter().augment(driver);
+    long time = System.currentTimeMillis() - current;
+
+    postBrowserCallTimeToTSD(time);
+    stepsPassed++;
   }
 
   @When("^I load a page")
@@ -54,6 +63,7 @@ public class SeleniumSteps {
       logger.info("Retrieving webpage");
       this.driver.get("http://" + website);
       logger.info("Webpage returned");
+      stepsPassed++;
     } catch (Exception e) {
       byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
       screenGrabs.add(screenshot);
@@ -77,30 +87,42 @@ public class SeleniumSteps {
       logger.info("Search submitted");
       byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
       screenGrabs.add(screenshot);
+      stepsPassed++;
     } catch (Exception e) {
       logger.warn(e.getMessage());
       byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
       screenGrabs.add(screenshot);
       TestCase.assertTrue(false);
+    } finally {
+
     }
   }
 
+  private void postStepsPassingToTSD(Integer stepsPassed) {
+    long timestamp = System.currentTimeMillis() / 1000;
+    
+    String json =
+        "{\"metric\": \"selenium.grid.steps.passed\", \"timestamp\": "+timestamp+", \"value\": " + stepsPassed + ", \"tags\": {\"host\": \"selenium.grid.beta\"}}";
+    TestClient.post("http://tsd.dev.cloudsys.tmcs/api/put", json, "application/json");
+  }
+
+  private void postBrowserCallTimeToTSD(long millis) {
+    long timestamp = System.currentTimeMillis() / 1000;
+    
+    String json =
+        "{\"metric\": \"selenium.grid.browser.instantiation\", \"timestamp\": "+timestamp+", \"value\": " + millis + ", \"tags\": {\"host\": \"selenium.grid.beta\"}}";
+    TestClient.post("http://tsd.dev.cloudsys.tmcs/api/put", json, "application/json");
+  }
+
+  
   @After
   public void embedScreenshot(Scenario scenario) {
-
+    postStepsPassingToTSD(stepsPassed);
     for (byte[] screenshot : screenGrabs) {
       scenario.embed(screenshot, "image/png");
     }
-
-    // String embedHtml =
-    // "<video width='640' height='480' preload='none' controls='controls'><source src='http://10.1.210.52/videos/"
-    // + getSessionId() +
-    // ".mp4' type='video/mp4; codecs=&quot;theora, vorbis&quot;' autostart='false'></video>";
-    // scenario.write(embedHtml);
-    this.driver.close();
+    if(driver != null)
+      this.driver.close();
   }
 
-  private String getSessionId() {
-    return ((RemoteWebDriver) this.driver).getSessionId().toString();
-  }
 }

@@ -37,5 +37,10 @@
 			<artifactId>cucumber-junit</artifactId>
 			<version>${cucumber-java.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.ticketmaster.qa</groupId>
+			<artifactId>TMClient</artifactId>
+			<version>0.0.16</version>
+		</dependency>
 	</dependencies>
 </project>
