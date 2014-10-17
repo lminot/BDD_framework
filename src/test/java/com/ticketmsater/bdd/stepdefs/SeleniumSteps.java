@@ -1,10 +1,16 @@
 package com.ticketmsater.bdd.stepdefs;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 import org.openqa.selenium.By;
@@ -14,6 +20,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.Augmenter;
 
+import com.google.common.collect.ImmutableMap;
 import com.ticketmaster.bdd.util.GridFactory;
 import com.ticketmaster.testclient.TestClient;
 
@@ -29,7 +36,7 @@ public class SeleniumSteps {
   private String website;
   Logger logger = Log.getLogger(SeleniumSteps.class);
   private GridFactory gridFactory = new GridFactory();
-  
+
   private Integer stepsPassed = 0;
 
   @Given("^that I have loaded \"([^\"]*)\" in a \"([^\"]*)\"$")
@@ -37,9 +44,9 @@ public class SeleniumSteps {
     logger.info("Getting a new browser");
     WebDriver driver = null;
     this.website = website;
- 
+
     long current = System.currentTimeMillis();
- 
+
     if (browser.toLowerCase().equals("firefox")) {
       driver = gridFactory.getFirefoxInstance();
       logger.info("Returning instance of a firefox browser");
@@ -53,7 +60,7 @@ public class SeleniumSteps {
     this.driver = new Augmenter().augment(driver);
     long time = System.currentTimeMillis() - current;
 
-    postBrowserCallTimeToTSD(time);
+    postBrowserCallTimeToTSD(time, browser);
     stepsPassed++;
   }
 
@@ -100,28 +107,65 @@ public class SeleniumSteps {
 
   private void postStepsPassingToTSD(Integer stepsPassed) {
     long timestamp = System.currentTimeMillis() / 1000;
-    
-    String json =
-        "{\"metric\": \"selenium.grid.steps.passed\", \"timestamp\": "+timestamp+", \"value\": " + stepsPassed + ", \"tags\": {\"host\": \"selenium.grid.beta\"}}";
-    TestClient.post("http://tsd.dev.cloudsys.tmcs/api/put", json, "application/json");
+    ObjectMapper om = new ObjectMapper();
+    Map<String, Object> metric = new HashMap<String, Object>();
+    metric.put("metric", "erix.grid.steps.passed");
+    metric.put("timestamp", timestamp);
+    metric.put("value", stepsPassed);
+    metric.put("tags", ImmutableMap.of("host", "selenium.grid.beta"));
+
+    String json;
+    try {
+      json = om.writeValueAsString(metric);
+      TestClient.post("http://tsd.dev.cloudsys.tmcs/api/put", json, "application/json");
+    } catch (JsonGenerationException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (JsonMappingException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
   }
 
-  private void postBrowserCallTimeToTSD(long millis) {
+  private void postBrowserCallTimeToTSD(long millis, String browser) {
     long timestamp = System.currentTimeMillis() / 1000;
-    
-    String json =
-        "{\"metric\": \"selenium.grid.browser.instantiation\", \"timestamp\": "+timestamp+", \"value\": " + millis + ", \"tags\": {\"host\": \"selenium.grid.beta\"}}";
-    TestClient.post("http://tsd.dev.cloudsys.tmcs/api/put", json, "application/json");
+
+    ObjectMapper om = new ObjectMapper();
+    Map<String, Object> metric = new HashMap<String, Object>();
+    metric.put("metric", "browser.instantiation.time");
+    metric.put("timestamp", timestamp);
+    metric.put("value", stepsPassed);
+    metric.put("tags", ImmutableMap.of("host", "selenium.grid.beta"));
+    metric.put("tags", ImmutableMap.of("browser", browser));
+
+    String json;
+    try {
+      json = om.writeValueAsString(metric);
+      TestClient.post("http://tsd.dev.cloudsys.tmcs/api/put", json, "application/json");
+    } catch (JsonGenerationException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (JsonMappingException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 
-  
+
   @After
   public void embedScreenshot(Scenario scenario) {
     postStepsPassingToTSD(stepsPassed);
     for (byte[] screenshot : screenGrabs) {
       scenario.embed(screenshot, "image/png");
     }
-    if(driver != null)
+    if (driver != null)
       this.driver.close();
   }
 
