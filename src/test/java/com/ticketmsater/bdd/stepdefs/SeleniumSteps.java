@@ -46,6 +46,7 @@ public class SeleniumSteps {
     this.website = website;
 
     long current = System.currentTimeMillis();
+    logger.info("Current time: " + current);
 
     if (browser.toLowerCase().equals("firefox")) {
       driver = gridFactory.getFirefoxInstance();
@@ -58,8 +59,10 @@ public class SeleniumSteps {
       logger.info("Returning instance of a internet explorer browser");
     }
     this.driver = new Augmenter().augment(driver);
-    long time = System.currentTimeMillis() - current;
-
+    long current2 = System.currentTimeMillis();
+    logger.info("Current time: " + current2);
+    long time = current2 - current;
+    
     postBrowserCallTimeToTSD(time, browser);
     stepsPassed++;
   }
@@ -117,6 +120,7 @@ public class SeleniumSteps {
     String json;
     try {
       json = om.writeValueAsString(metric);
+      logger.info(json);
       TestClient.post("http://tsd.dev.cloudsys.tmcs/api/put", json, "application/json");
     } catch (JsonGenerationException e) {
       // TODO Auto-generated catch block
@@ -138,13 +142,14 @@ public class SeleniumSteps {
     Map<String, Object> metric = new HashMap<String, Object>();
     metric.put("metric", "browser.instantiation.time");
     metric.put("timestamp", timestamp);
-    metric.put("value", stepsPassed);
+    metric.put("value", millis);
     metric.put("tags", ImmutableMap.of("host", "selenium.grid.beta"));
     metric.put("tags", ImmutableMap.of("browser", browser));
 
     String json;
     try {
       json = om.writeValueAsString(metric);
+      logger.info(json);
       TestClient.post("http://tsd.dev.cloudsys.tmcs/api/put", json, "application/json");
     } catch (JsonGenerationException e) {
       // TODO Auto-generated catch block
