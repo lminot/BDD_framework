@@ -144,7 +144,7 @@ public class SeleniumSteps {
     metric.put("timestamp", timestamp);
     metric.put("value", millis);
     metric.put("tags", ImmutableMap.of("host", "selenium.grid.beta"));
-    metric.put("tags", ImmutableMap.of("browser", browser));
+    metric.put("tags", ImmutableMap.of("browser", browser.replaceAll("\\s+", ".")));
 
     String json;
     try {
