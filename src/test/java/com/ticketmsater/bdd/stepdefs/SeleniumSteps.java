@@ -67,7 +67,7 @@ public class SeleniumSteps {
     stepsPassed++;
   }
 
-  @When("^I load a page")
+  @When(value="^I load a page", timeout=30000)
   public void search_for_the_term() throws Exception {
     try {
       logger.info("Retrieving webpage");
@@ -82,7 +82,7 @@ public class SeleniumSteps {
     }
   }
 
-  @Then("^search for the term \"([^\"]*)\"$")
+  @Then(value="^search for the term \"([^\"]*)\"$", timeout=30000)
   public void search_for_the_term(String arg1) throws Exception {
     try {
       logger.info("Submitting search " + arg1);
