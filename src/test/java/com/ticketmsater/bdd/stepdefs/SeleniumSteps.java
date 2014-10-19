@@ -104,7 +104,7 @@ public class SeleniumSteps {
       screenGrabs.add(screenshot);
       TestCase.assertTrue(false);
     } finally {
-
+      logger.info("Done search");
     }
   }
 
