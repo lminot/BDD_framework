@@ -9,14 +9,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.eclipse.jetty.util.log.Logger;
 
 import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -62,7 +61,8 @@ public class GridFactory {
         logger.warn(e.getMessage());
       }
     }
-    driver = new Augmenter().augment(driver);
+    driver.manage().window().maximize();
+    //driver = new Augmenter().augment(driver);
     return driver;
   }
 
