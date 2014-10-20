@@ -95,8 +95,8 @@ public class SeleniumSteps {
       element.submit();
       Thread.sleep(2000);
       logger.info("Search submitted");
-//      byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
-//      screenGrabs.add(screenshot);
+      byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+      screenGrabs.add(screenshot);
       stepsPassed++;
     } catch (Exception e) {
       logger.warn(e.getMessage());
