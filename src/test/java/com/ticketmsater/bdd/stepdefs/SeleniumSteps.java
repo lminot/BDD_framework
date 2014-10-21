@@ -171,6 +171,7 @@ public class SeleniumSteps {
     }
     if (driver != null)
       this.driver.close();
+      this.driver.quit();
   }
 
 }
