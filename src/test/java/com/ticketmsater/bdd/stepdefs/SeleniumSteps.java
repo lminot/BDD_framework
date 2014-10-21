@@ -26,6 +26,7 @@ import com.ticketmaster.testclient.TestClient;
 
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
+import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -41,33 +42,32 @@ public class SeleniumSteps {
 
   @Given("^that I have loaded \"([^\"]*)\" in a \"([^\"]*)\"$")
   public void that_I_have_loaded_in_a(String website, String browser) throws Throwable {
-    logger.info("Getting a new browser");
-    WebDriver driver = null;
+    logger.info("Getting a new browser");    
     this.website = website;
 
     long current = System.currentTimeMillis();
     logger.info("Current time: " + current);
 
     if (browser.toLowerCase().equals("firefox")) {
-      driver = gridFactory.getFirefoxInstance();
+      this.driver = gridFactory.getFirefoxInstance();
       logger.info("Returning instance of a firefox browser");
     } else if (browser.toLowerCase().equals("chrome")) {
-      driver = gridFactory.getChromeInstance();
+      this.driver = gridFactory.getChromeInstance();
       logger.info("Returning instance of a chrome browser");
     } else if (browser.toLowerCase().equals("internet explorer")) {
-      driver = gridFactory.getInternetExplorerInstance();
+      this.driver = gridFactory.getInternetExplorerInstance();
       logger.info("Returning instance of a internet explorer browser");
     }
     this.driver = new Augmenter().augment(driver);
     long current2 = System.currentTimeMillis();
     logger.info("Current time: " + current2);
     long time = current2 - current;
-    
+
     postBrowserCallTimeToTSD(time, browser);
     stepsPassed++;
   }
 
-  @When(value="^I load a page", timeout=30000)
+  @When(value = "^I load a page", timeout = 30000)
   public void search_for_the_term() throws Exception {
     try {
       logger.info("Retrieving webpage");
@@ -82,7 +82,7 @@ public class SeleniumSteps {
     }
   }
 
-  @Then(value="^search for the term \"([^\"]*)\"$", timeout=3000)
+  @Then(value = "^search for the term \"([^\"]*)\"$", timeout = 30000)
   public void search_for_the_term(String arg1) throws Exception {
     try {
       logger.info("Submitting search " + arg1);
@@ -162,7 +162,6 @@ public class SeleniumSteps {
       e.printStackTrace();
     }
   }
-
 
   @After
   public void embedScreenshot(Scenario scenario) {
