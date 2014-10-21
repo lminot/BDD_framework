@@ -82,7 +82,7 @@ public class SeleniumSteps {
     }
   }
 
-  @Then(value="^search for the term \"([^\"]*)\"$", timeout=30000)
+  @Then(value="^search for the term \"([^\"]*)\"$", timeout=3000)
   public void search_for_the_term(String arg1) throws Exception {
     try {
       logger.info("Submitting search " + arg1);
