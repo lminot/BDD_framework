@@ -22,8 +22,8 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 public class GridFactory {
 
   private Logger logger = Log.getLogger(GridFactory.class);
-  private static final String HUB_URL_ALPHA = "http://10.1.210.52:4444/wd/hub";
-  private static final String HUB_URL_BETA = "http://10.1.210.77:4444/wd/hub";
+  private static final String HUB_URL_ALPHA = "http://10.1.210.77:4444/wd/hub";
+  private static final String HUB_URL_BETA = "http://10.1.203.143:4444/wd/hub";
   private static final Integer TIMEOUT_SECONDS = 120;
 
   public GridFactory() {}
