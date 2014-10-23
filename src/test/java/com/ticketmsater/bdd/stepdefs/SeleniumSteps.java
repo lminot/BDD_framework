@@ -19,6 +19,8 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.Augmenter;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.google.common.collect.ImmutableMap;
 import com.ticketmaster.bdd.util.GridFactory;
@@ -85,9 +87,9 @@ public class SeleniumSteps {
   public void search_for_the_term(String arg1) throws Exception {
     try {
       logger.info("Submitting search " + arg1);
-      //this.driver.get("http://" + website);
-
-      WebElement element = driver.findElement(By.name("q"));
+      WebDriverWait wait = new WebDriverWait(driver, 60);
+      WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("q")));
+      //element = driver.findElement(By.name("q"));
       for (char c : arg1.toCharArray()) {
         element.sendKeys(String.valueOf(c));
       }
