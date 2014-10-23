@@ -85,14 +85,14 @@ public class SeleniumSteps {
   public void search_for_the_term(String arg1) throws Exception {
     try {
       logger.info("Submitting search " + arg1);
-      this.driver.get("http://" + website);
+      //this.driver.get("http://" + website);
 
       WebElement element = driver.findElement(By.name("q"));
       for (char c : arg1.toCharArray()) {
         element.sendKeys(String.valueOf(c));
       }
       element.submit();
-      Thread.sleep(2000);
+      Thread.sleep(4000);
       logger.info("Search submitted");
       byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
       screenGrabs.add(screenshot);
