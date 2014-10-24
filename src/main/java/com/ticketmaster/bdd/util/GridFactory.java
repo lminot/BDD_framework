@@ -2,123 +2,116 @@ package com.ticketmaster.bdd.util;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
+import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class GridFactory {
 
-	private static final String hubURL = "http://10.1.210.77:4444/wd/hub";
-	
-	private GridFactory() {
-	}
-	
-	public static WebDriver getInternetExplorer8Instance() throws Exception {
-		return getInternetExplorerInstance("8");
-	}
-	
-	public static WebDriver getInternetExplorer9Instance() throws Exception {
-		return getInternetExplorerInstance("9");
-	}
+  private Logger logger = Log.getLogger(GridFactory.class);
+  private static final String HUB_URL_BETA = "http://10.1.210.77:4444/wd/hub";
+  private static final String HUB_URL_ALPHA = "http://10.1.203.111:4444/wd/hub";
+  private static final Integer TIMEOUT_SECONDS = 120;
 
-	public static WebDriver getInternetExplorer10Instance() throws Exception {
-		return getInternetExplorerInstance("10");
-	}
-	
-	public static WebDriver getInternetExplorerInstance() throws Exception {
-		return getInternetExplorerInstance("10");
-	}
+  public GridFactory() {}
 
-	public static WebDriver getInternetExplorerInstance(String version) throws Exception {
-		DesiredCapabilities capability = DesiredCapabilities.internetExplorer();
-		capability.setCapability("takeScreenshot", true);
-		capability.setPlatform(Platform.WINDOWS);
-		capability.setBrowserName("internet explorer");
+  private WebDriver getBrowser(DesiredCapabilities capability) {
+    WebDriver driver = null;
+    ExecutorService executor = Executors.newCachedThreadPool();
+    String hubUrl = HUB_URL_BETA;
+    Callable<Object> task = new BrowserCreate(capability, hubUrl);
+    Future<Object> future = executor.submit(task);
 
-		capability
-				.setCapability(
-						InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,
-						true);
+    try {
+      driver = (WebDriver) future.get(GridFactory.TIMEOUT_SECONDS, TimeUnit.SECONDS);
+    } catch (TimeoutException ex) {
+      logger.warn("Timed out");
+    } catch (InterruptedException e) {
+      logger.warn(e.getMessage());
+    } catch (ExecutionException e) {
+      logger.warn(e.getMessage());
+    }
 
-		WebDriver driver;
-		try {
-			driver = new RemoteWebDriver(new URL(hubURL), capability);
-		} catch (MalformedURLException me) {
-			// Change to logger
-			System.out
-					.println("Please check "
-							+ hubURL
-							+ " as it is specified to be the Selenium Hub URL but it's not responding correctly.");
-			throw new Exception("Cannot connect to the Grid.");
-		}
+    if (driver == null) {
+      logger.info("Browser is null, switch to backup Grid. Alerting team.");
+      hubUrl = HUB_URL_ALPHA;
+      task = new BrowserCreate(capability, hubUrl);
+      future = executor.submit(task);
 
-		driver = new Augmenter().augment(driver);
-		return driver;
-	}
+      try {
+        driver = (WebDriver) future.get(GridFactory.TIMEOUT_SECONDS, TimeUnit.SECONDS);
+      } catch (TimeoutException ex) {
+        logger.warn("Timed out");
+      } catch (InterruptedException e) {
+        logger.warn(e.getMessage());
+      } catch (ExecutionException e) {
+        logger.warn(e.getMessage());
+      }
+    }
+    driver.manage().window().maximize();
+    //driver = new Augmenter().augment(driver);
+    return driver;
+  }
 
-	public static WebDriver getFirefoxInstance() throws Exception {
-		DesiredCapabilities capability = DesiredCapabilities.firefox();
-		capability.setCapability("takeScreenshot", true);
+  public WebDriver getInternetExplorerInstance() throws Exception {
 
-		WebDriver driver = null;
+    DesiredCapabilities capability = DesiredCapabilities.internetExplorer();
+    capability.setCapability("takeScreenshot", true);
+    capability.setPlatform(Platform.WINDOWS);
+    capability.setBrowserName("internet explorer");
 
-		try {
-			driver = new RemoteWebDriver(new URL(hubURL), capability);
-		} catch (MalformedURLException me) {
-			throw new Exception("Cannot connect to the Grid.");
-		}
-		driver.manage().window().maximize();
-		driver = new Augmenter().augment(driver);
-		return driver;
-	}
-	
-	public static WebDriver getChromeInstance() throws Exception {
-		DesiredCapabilities capability = DesiredCapabilities.chrome();
+    capability.setCapability(
+        InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
+    capability.setCapability("takeScreenshot", true);
 
-		ChromeOptions options = new ChromeOptions();
-		options.addArguments("--start-maximized");
+    return getBrowser(capability);
+  }
 
-		capability.setCapability(ChromeOptions.CAPABILITY, options);
-		capability.setCapability("takeScreenshot", true);
+  public WebDriver getFirefoxInstance() throws Exception {
 
-		WebDriver driver = null;
+    DesiredCapabilities capability = DesiredCapabilities.firefox();
+    capability.setCapability("takeScreenshot", true);
+    return getBrowser(capability);
 
-		try {
-			driver = new RemoteWebDriver(new URL(hubURL), capability);
-		} catch (MalformedURLException me) {
-			// Change to logger
-			System.out
-					.println("Please check "
-							+ hubURL
-							+ " as it is specified to be the Selenium Hub URL but it's not responding correctly.");
-			throw new Exception("Cannot connect to the Grid.");
-		}
+  }
 
-		driver = new Augmenter().augment(driver);
-		return driver;
-	}
-	
-	public static WebDriver getPhantomJSInstance() throws Exception {
-		DesiredCapabilities capability = DesiredCapabilities.phantomjs();
+  public WebDriver getChromeInstance() throws Exception {
 
-		WebDriver driver = null;
-		try {
-			driver = new RemoteWebDriver(new URL(hubURL), capability);
-		} catch (MalformedURLException me) {
-			// Change to logger
-			System.out
-					.println("Please check "
-							+ hubURL
-							+ " as it is specified to be the Selenium Hub URL but it's not responding correctly.");
-			throw new Exception("Cannot connect to the Grid.");
-		}
+    DesiredCapabilities capability = DesiredCapabilities.chrome();
 
-		driver = new Augmenter().augment(driver);
-		return driver;
-	}
+    ChromeOptions options = new ChromeOptions();
+    options.addArguments("--start-maximized");
+
+    capability.setCapability(ChromeOptions.CAPABILITY, options);
+    capability.setCapability("takeScreenshot", true);
+    return getBrowser(capability);
+  }
+
+  public class BrowserCreate implements Callable<Object> {
+    private final DesiredCapabilities capability;
+    private final String hubUrl;
+
+    public BrowserCreate(DesiredCapabilities capability, String hubUrl) {
+      this.capability = capability;
+      this.hubUrl = hubUrl;
+    }
+
+    public Object call() throws MalformedURLException {
+      return new RemoteWebDriver(new URL(hubUrl), capability);
+    }
+
+  }
 }
