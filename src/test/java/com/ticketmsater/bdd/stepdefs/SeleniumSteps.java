@@ -113,7 +113,7 @@ public class SeleniumSteps {
     long timestamp = System.currentTimeMillis() / 1000;
     ObjectMapper om = new ObjectMapper();
     Map<String, Object> metric = new HashMap<String, Object>();
-    metric.put("metric", "erix.grid.steps.passed");
+    metric.put("metric", "alpha.grid.steps.passed");
     metric.put("timestamp", timestamp);
     metric.put("value", stepsPassed);
     metric.put("tags", ImmutableMap.of("host", "selenium.grid.beta"));
@@ -141,7 +141,7 @@ public class SeleniumSteps {
 
     ObjectMapper om = new ObjectMapper();
     Map<String, Object> metric = new HashMap<String, Object>();
-    metric.put("metric", "browser.instantiation.time");
+    metric.put("metric", "alpha.grid.browser.instantiation.time");
     metric.put("timestamp", timestamp);
     metric.put("value", millis);
     metric.put("tags", ImmutableMap.of("host", "selenium.grid.beta"));
