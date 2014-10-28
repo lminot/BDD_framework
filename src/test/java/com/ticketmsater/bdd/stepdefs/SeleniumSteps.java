@@ -94,7 +94,7 @@ public class SeleniumSteps {
         element.sendKeys(String.valueOf(c));
       }
       element.submit();
-      Thread.sleep(4000);
+      wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("pages")));
       logger.info("Search submitted");
       byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
       screenGrabs.add(screenshot);
