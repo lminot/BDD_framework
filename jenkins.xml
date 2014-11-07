@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<maven2-moduleset plugin="maven-plugin">
+  <actions/>
+  <description></description>
+  <logRotator class="hudson.tasks.LogRotator">
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>5</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <org.jenkinsci.plugins.mavenrepocleaner.MavenRepoCleanerProperty plugin="maven-repo-cleaner">
+      <notOnThisProject>false</notOnThisProject>
+    </org.jenkinsci.plugins.mavenrepocleaner.MavenRepoCleanerProperty>
+    <com.gmail.ikeike443.PlayAutoTestJobProperty plugin="play-autotest-plugin"/>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>{{ GIT_REPOSITORY }}</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>{{ GIT_BRANCH }}</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <browser class="hudson.plugins.git.browser.GitLab">
+      <url>{{ GIT_URL }}</url>
+      <version>{{ GITLAB_VERSION }}</version>
+    </browser>
+    <submoduleCfg class="list"/>
+    <extensions>
+      <hudson.plugins.git.extensions.impl.WipeWorkspace/>
+      <hudson.plugins.git.extensions.impl.LocalBranch>
+        <localBranch>{{ GIT_BRANCH }}</localBranch>
+      </hudson.plugins.git.extensions.impl.LocalBranch>
+    </extensions>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>JDK6</jdk>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <rootModule>
+    <groupId>com.ticketmaster.platform.configuration</groupId>
+    <artifactId>configuration-management-webapp</artifactId>
+  </rootModule>
+  <goals>clean deploy site -U -Djetty.skip=true</goals>
+  <mavenName>Maven</mavenName>
+  <mavenOpts>-Xms1024M -Xmx2048M -XX:NewSize=128m -XX:MaxNewSize=256m -XX:PermSize=128m -XX:MaxPermSize=512m -XX:+CMSClassUnloadingEnabled         -XX:+UseConcMarkSweepGC -XX:+CMSPermGenSweepingEnabled</mavenOpts>
+  <aggregatorStyleBuild>true</aggregatorStyleBuild>
+  <incrementalBuild>false</incrementalBuild>
+  <perModuleEmail>true</perModuleEmail>
+  <ignoreUpstremChanges>false</ignoreUpstremChanges>
+  <archivingDisabled>true</archivingDisabled>
+  <resolveDependencies>false</resolveDependencies>
+  <processPlugins>false</processPlugins>
+  <mavenValidationLevel>-1</mavenValidationLevel>
+  <runHeadless>false</runHeadless>
+  <settingConfigId></settingConfigId>
+  <globalSettingConfigId></globalSettingConfigId>
+  <disableTriggerDownstreamProjects>false</disableTriggerDownstreamProjects>
+  <settings class="jenkins.mvn.DefaultSettingsProvider"/>
+  <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+  <reporters>
+    <hudson.maven.reporters.MavenMailer>
+      <dontNotifyEveryUnstableBuild>true</dontNotifyEveryUnstableBuild>
+      <sendToIndividuals>false</sendToIndividuals>
+      <perModuleEmail>true</perModuleEmail>
+    </hudson.maven.reporters.MavenMailer>
+  </reporters>
+  <publishers>
+    <org.jvnet.hudson.plugins.groovypostbuild.GroovyPostbuildRecorder plugin="groovy-postbuild@1.8">
+      <groovyScript>def currentBuild = manager.build;
+        def mavenVer = currentBuild.getParent().getModules().toArray()[0].getVersion();
+        def newParamAction = new hudson.model.ParametersAction(new hudson.model.StringParameterValue(&quot;ARTIFACT_VERSION&quot;, mavenVer));
+        currentBuild.addAction(newParamAction);
+        manager.addShortText(&quot;${mavenVer}&quot;)
+      </groovyScript>
+      <behavior>2</behavior>
+    </org.jvnet.hudson.plugins.groovypostbuild.GroovyPostbuildRecorder>
+    <hudson.plugins.sonar.SonarPublisher plugin="sonar@2.0">
+      <jdk>(Inherit From Job)</jdk>
+      <branch></branch>
+      <language></language>
+      <mavenOpts></mavenOpts>
+      <jobAdditionalProperties></jobAdditionalProperties>
+    </hudson.plugins.sonar.SonarPublisher>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper"/>
+    <org.jvnet.hudson.plugins.m2release.M2ReleaseBuildWrapper plugin="m2release">
+      <scmUserEnvVar></scmUserEnvVar>
+      <scmPasswordEnvVar></scmPasswordEnvVar>
+      <releaseEnvVar>IS_M2RELEASEBUILD</releaseEnvVar>
+      <releaseGoals>-Dresume=false release:prepare release:perform</releaseGoals>
+      <dryRunGoals>-Dresume=false -DdryRun=true release:prepare</dryRunGoals>
+      <selectCustomScmCommentPrefix>false</selectCustomScmCommentPrefix>
+      <selectAppendHudsonUsername>false</selectAppendHudsonUsername>
+      <selectScmCredentials>false</selectScmCredentials>
+      <numberOfReleaseBuildsToKeep>1</numberOfReleaseBuildsToKeep>
+    </org.jvnet.hudson.plugins.m2release.M2ReleaseBuildWrapper>
+  </buildWrappers>
+  <prebuilders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+RESERVED_NAME=(&quot;develop&quot; &quot;master&quot; &quot;release&quot;)
+BRANCH={{ GIT_BRANCH }}
+ESCAPED_BRANCH=${BRANCH//-/_}
+ESCAPED_BRANCH=${ESCAPED_BRANCH//origin\/}
+ESCAPED_BRANCH=${ESCAPED_BRANCH//\//_}
+version=`mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version|grep -Ev &apos;(^\[|Download\w+:)&apos;|cut -f 1 -d -`.${ESCAPED_BRANCH}
+
+function isReservedName() {
+  local e
+  for e in &quot;${RESERVED_NAME[@]}&quot;; do [[ &quot;$1&quot; == &quot;$e&quot;* ]] &amp;&amp; return 0; done
+    return 1
+}
+
+isReservedName $BRANCH
+reservedName=$?
+if [ &quot;$reservedName&quot; = &quot;1&quot; ]
+then
+  mvn versions:set -DnewVersion=${version}-SNAPSHOT
+fi
+</command>
+    </hudson.tasks.Shell>
+  </prebuilders>
+  <postbuilders/>
+  <runPostStepsIfResult>
+    <name>FAILURE</name>
+    <ordinal>2</ordinal>
+    <color>RED</color>
+    <completeBuild>true</completeBuild>
+  </runPostStepsIfResult>
+</maven2-moduleset>

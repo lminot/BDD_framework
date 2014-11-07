@@ -1,0 +1,12 @@
+<jenkins>
+    <jdk>JDK6</jdk>
+    <maven_goals>clean install</maven_goals>
+    <!-- Set auto_deploy true if you want to activate your rundeck.xml -->
+    <auto_deploy>false</auto_deploy>
+    <notification_email>eric.lee@ticketmaster.com</notification_email>
+    <!-- Set cucumber_report_path false if you don't want to use the cucumber plugin, otherwise, set cucumber json report path -->
+    <cucumber_report_path>false</cucumber_report_path>
+    <jenkins_xml>
+        <enabled>true</enabled>
+    </jenkins_xml>
+</jenkins>
