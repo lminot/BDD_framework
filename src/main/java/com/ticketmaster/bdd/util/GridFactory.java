@@ -26,8 +26,8 @@ public class GridFactory
 {
 
 	private Logger logger = Log.getLogger(GridFactory.class);
-	private static final String HUB_URL_ALPHA = "http://10.1.200.233:4444/wd/hub";
-	private static final String HUB_URL_BETA = "http://10.1.210.77:4444/wd/hub";
+	private static final String HUB_URL_PRIMARY = "http://10.1.200.233:4444/wd/hub";
+	private static final String HUB_URL_SECONDARY = "http://10.1.210.77:4444/wd/hub";
 	private static final Integer TIMEOUT_SECONDS = 120;
 
 	public GridFactory()
@@ -38,7 +38,7 @@ public class GridFactory
 	{
 		WebDriver driver = null;
 		ExecutorService executor = Executors.newCachedThreadPool();
-		String hubUrl = HUB_URL_BETA;
+		String hubUrl = HUB_URL_PRIMARY;
 		Callable<Object> task = new BrowserCreate(capability, hubUrl);
 		Future<Object> future = executor.submit(task);
 
@@ -62,7 +62,7 @@ public class GridFactory
 		if (driver == null)
 		{
 			logger.info("Browser is null, switch to backup Grid. Alerting team.");
-			hubUrl = HUB_URL_ALPHA;
+			hubUrl = HUB_URL_SECONDARY;
 			task = new BrowserCreate(capability, hubUrl);
 			future = executor.submit(task);
 
@@ -84,7 +84,6 @@ public class GridFactory
 			}
 		}
 		driver.manage().window().maximize();
-		// driver = new Augmenter().augment(driver);
 		return driver;
 	}
 
