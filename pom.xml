@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>SeleniumDemo</groupId>
     <artifactId>SeleniumDemo</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2-SNAPSHOT</version>
 
     <parent>
         <groupId>com.ticketmaster.platform</groupId>
@@ -13,7 +13,7 @@
     <scm>
         <developerConnection>scm:git:ssh://git@git.tm.tmcs/platform/seleniumgriddemo.git</developerConnection>
         <connection>scm:git:git://git.tm.tmcs/platform/seleniumgriddemo.git</connection>
-      <tag>SeleniumDemo-0.0.1</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <properties>
