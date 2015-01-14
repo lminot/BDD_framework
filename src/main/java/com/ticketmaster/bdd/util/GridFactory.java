@@ -26,7 +26,8 @@ public class GridFactory
 {
 
 	private Logger logger = Log.getLogger(GridFactory.class);
-	private static final String HUB_URL_PRIMARY = "http://10.1.200.233:4444/wd/hub";
+	//private static final String HUB_URL_PRIMARY = "http://10.1.200.233:4444/wd/hub";
+	private static final String HUB_URL_PRIMARY = "http://127.0.0.1:4444/wd/hub"; 
 	private static final String HUB_URL_SECONDARY = "http://10.1.210.77:4444/wd/hub";
 	private static final Integer TIMEOUT_SECONDS = 120;
 

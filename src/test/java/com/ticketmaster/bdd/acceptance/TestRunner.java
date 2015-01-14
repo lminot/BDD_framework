@@ -16,9 +16,9 @@ import cucumber.api.junit.Cucumber;
 @RunWith(Cucumber.class)
 @CucumberOptions(
 		format={"pretty", "html:target/results", "json:target/results.json"},
-		features="src/test/resources/com/ticketmaster/bdd/acceptance",
+		features="src/test/resources/com/ticketmaster/bdd/features",
 		glue={"com.ticketmsater.bdd.stepdefs"},
-		tags={"@smoke"}
+		tags={"@am-login"}
 		)
 public class TestRunner {
 

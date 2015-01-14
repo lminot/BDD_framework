@@ -26,8 +26,10 @@ import com.google.common.collect.ImmutableMap;
 import com.ticketmaster.bdd.util.GridFactory;
 import com.ticketmaster.testclient.TestClient;
 
+import cucumber.api.PendingException;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -64,7 +66,7 @@ public class SeleniumSteps {
     logger.info("Current time: " + current2);
     long time = current2 - current;
 
-    postBrowserCallTimeToTSD(time, browser);
+//    postBrowserCallTimeToTSD(time, browser);
     stepsPassed++;
   }
 
@@ -81,6 +83,35 @@ public class SeleniumSteps {
       TestCase.assertTrue(false);
       logger.info("Webpage failed");
     }
+  }
+  
+  @And("^that I have logged in with \"(.*?)\" and \"(.*?)\"$")
+  public void that_I_have_logged_in_with_and(String arg1, String arg2) throws Throwable {
+	WebElement elementUser = driver.findElement(By.cssSelector("#username"));
+	WebElement elementPass = driver.findElement(By.cssSelector("#password"));
+	WebElement elementSign = driver.findElement(By.cssSelector("#signin"));
+	for (char c : arg1.toCharArray()) 
+	{
+		elementUser.sendKeys(String.valueOf(c));
+	}
+	for (char c : arg2.toCharArray()) 
+	{
+		elementPass.sendKeys(String.valueOf(c));
+	}
+	elementSign.click();
+	Thread.sleep(5000);
+  }
+	
+  @Then("^I logout$")
+  public void i_logout() throws Throwable 
+  {
+	  WebElement elementLogDrop = driver.findElement(By.xpath(".//*[@id='nav']/div/div[3]/div/ul/li[2]/div"));
+	  WebElement elementSignOut = driver.findElement(By.xpath(".//*[@id='settings-menu']/div/div/a[2]"));
+	  
+	  elementLogDrop.click();
+	  Thread.sleep(1000);
+	  elementSignOut.click();
+	  Thread.sleep(2000);
   }
 
   @Then(value = "^search for the term \"([^\"]*)\"$", timeout = 60000)
@@ -166,7 +197,7 @@ public class SeleniumSteps {
 
   @After
   public void embedScreenshot(Scenario scenario) {
-    postStepsPassingToTSD(stepsPassed);
+//    postStepsPassingToTSD(stepsPassed);
     for (byte[] screenshot : screenGrabs) {
       scenario.embed(screenshot, "image/png");
     }
@@ -174,5 +205,9 @@ public class SeleniumSteps {
       this.driver.close();
       this.driver.quit();
   }
-
+  
+  public WebDriver getDriver()
+  {
+	  return driver;
+  }
 }
