@@ -42,6 +42,7 @@ public class SeleniumSteps {
   private GridFactory gridFactory = new GridFactory();
 
   private Integer stepsPassed = 0;
+  private String layout;
 
   @Given("^that I have loaded \"([^\"]*)\" in a \"([^\"]*)\"$")
   public void that_I_have_loaded_in_a(String website, String browser) throws Throwable {
@@ -99,7 +100,22 @@ public class SeleniumSteps {
 		elementPass.sendKeys(String.valueOf(c));
 	}
 	elementSign.click();
-	Thread.sleep(5000);
+	Thread.sleep(3000);
+	
+	/**
+	 * Check for layout format to determine future functionality
+	 */
+	
+	if( driver.findElement(By.cssSelector("#portal-nav")).isDisplayed() )
+	{
+		System.out.println("Top Nav is protal format.");
+		layout = "topNav";
+	}
+	else if ( driver.findElement(By.cssSelector("#portal-nav")).isDisplayed() )
+	{
+		System.out.println("Side Nav is Portal format.");
+		layout = "sideNav";
+	}
   }
 	
   @Then("^I logout$")
@@ -204,10 +220,5 @@ public class SeleniumSteps {
     if (driver != null)
       this.driver.close();
       this.driver.quit();
-  }
-  
-  public WebDriver getDriver()
-  {
-	  return driver;
   }
 }
