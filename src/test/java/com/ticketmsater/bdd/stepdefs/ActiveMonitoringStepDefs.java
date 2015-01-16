@@ -14,6 +14,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -57,7 +58,7 @@ public class ActiveMonitoringStepDefs
 	@Given("^that I have loaded \"([^\"]*)\" in \"([^\"]*)\"$")
 	public void that_I_have_loaded_in_a(String website, String browser) throws Throwable 
 	{
-		logger.info("Getting a new browser");    
+		logger.info("Getting a new browser");
 		this.website = website;
 		long current = System.currentTimeMillis();
 		logger.info("Current time: " + current);
@@ -122,16 +123,32 @@ public class ActiveMonitoringStepDefs
 		/*
 		 * Check for layout format to determine future functionality
 		 */
-		if( driver.findElement(By.cssSelector("#portal-nav")).isDisplayed() )
-		{
-			layout = "topNav";
-		}
-		//Yet to be tested for functionality
-		else if ( driver.findElement(By.cssSelector("#navigation-items")).isDisplayed() )
-		{
-			System.out.println("Side Nav is Portal format.");
+		try {
+			driver.findElement(By.cssSelector("#navigation-items"));
 			layout = "sideNav";
+		} catch (NoSuchElementException e)
+		{
+			logger.warn(e.getMessage());
 		}
+		try {
+			driver.findElement(By.cssSelector("#portal-nav"));
+			layout = "topNav";
+		} catch (NoSuchElementException e)
+		{
+			logger.warn(e.getMessage());
+		}
+
+		//Fails under assumption of element being there to check for
+//		if( driver.findElement(By.cssSelector("#portal-nav")).isDisplayed() )
+//		{
+//			layout = "topNav";
+//		}
+//		//Yet to be tested for functionality
+//		else if ( driver.findElement(By.cssSelector("#navigation-items")).isDisplayed() )
+//		{
+//			System.out.println("Side Nav is Portal format.");
+//			layout = "sideNav";
+//		}
 	}
 	
 	@Then("^I am on the login page$")
