@@ -25,6 +25,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import com.google.common.collect.ImmutableMap;
 import com.ticketmaster.bdd.util.GridFactory;
 import com.ticketmaster.testclient.TestClient;
+import com.ticketmaster.bdd.util.GetPropertyValue;
 
 import cucumber.api.PendingException;
 import cucumber.api.Scenario;
@@ -36,12 +37,20 @@ import cucumber.api.java.en.When;
 
 public class ActiveMonitoringStepDefs 
 {
+	private static GridFactory gridFactory = new GridFactory();
+	
 	private List<byte[]> screenGrabs = new ArrayList<byte[]>();
 	private WebDriver driver;
 	private String website;
 	Logger logger = Log.getLogger(ActiveMonitoringStepDefs.class);
-	private GridFactory gridFactory = new GridFactory();
 
+	private static final String configLocatorFilePath = "src/test/resources/locators.properties";
+	private String prodUser = GetPropertyValue.getValueFromPropertyFile(configLocatorFilePath, "ProdUsernameCss");
+	private String prodPass = GetPropertyValue.getValueFromPropertyFile(configLocatorFilePath, "ProdUserPassCss");
+	private String prodLogin = GetPropertyValue.getValueFromPropertyFile(configLocatorFilePath, "ProdSubmitCss");
+	private String userDrop = GetPropertyValue.getValueFromPropertyFile(configLocatorFilePath, "ProdUserDrop");
+	private String signOut = GetPropertyValue.getValueFromPropertyFile(configLocatorFilePath, "ProdSignOut");
+	
 	private Integer stepsPassed = 0;
 	private String layout;
 
@@ -50,17 +59,21 @@ public class ActiveMonitoringStepDefs
 	{
 		logger.info("Getting a new browser");    
 		this.website = website;
-
 		long current = System.currentTimeMillis();
 		logger.info("Current time: " + current);
 
-		if (browser.toLowerCase().equals("firefox")) {
+		if (browser.toLowerCase().equals("firefox")) 
+		{
 			this.driver = gridFactory.getFirefoxInstance();
 			logger.info("Returning instance of a firefox browser");
-		} else if (browser.toLowerCase().equals("chrome")) {
+		} 
+		else if (browser.toLowerCase().equals("chrome")) 
+		{
 			this.driver = gridFactory.getChromeInstance();
 			logger.info("Returning instance of a chrome browser");
-		} else if (browser.toLowerCase().equals("internet explorer")) {
+		} 
+		else if (browser.toLowerCase().equals("internet explorer")) 
+		{
 			this.driver = gridFactory.getInternetExplorerInstance();
 			logger.info("Returning instance of a internet explorer browser");
 		}
@@ -91,10 +104,10 @@ public class ActiveMonitoringStepDefs
   
 	@When("^I have logged in with \"(.*?)\" and \"(.*?)\"$")
 	public void that_I_have_logged_in_with_and(String username, String password) throws Throwable 
-	{
-		WebElement elementUser = driver.findElement(By.cssSelector("#username"));
-		WebElement elementPass = driver.findElement(By.cssSelector("#password"));
-		WebElement elementSign = driver.findElement(By.cssSelector("#signin"));
+	{	
+		WebElement elementUser = driver.findElement(By.cssSelector(prodUser));
+		WebElement elementPass = driver.findElement(By.cssSelector(prodPass));
+		WebElement elementSign = driver.findElement(By.cssSelector(prodLogin));
 		
 		for (char c : username.toCharArray()) 
 		{
@@ -113,7 +126,8 @@ public class ActiveMonitoringStepDefs
 		{
 			layout = "topNav";
 		}
-		else if ( driver.findElement(By.cssSelector("#portal-nav")).isDisplayed() )
+		//Yet to be tested for functionality
+		else if ( driver.findElement(By.cssSelector("#navigation-items")).isDisplayed() )
 		{
 			System.out.println("Side Nav is Portal format.");
 			layout = "sideNav";
@@ -129,10 +143,10 @@ public class ActiveMonitoringStepDefs
 
 		if( layout.matches("topNav") )
 		{
-			elementLogDrop = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//*[@id='nav']/div/div[3]/div/ul/li[2]/div")));
+			elementLogDrop = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(userDrop)));
 			
-			elementLogDrop = driver.findElement(By.xpath(".//*[@id='nav']/div/div[3]/div/ul/li[2]/div"));
-			elementSignOut = driver.findElement(By.xpath(".//*[@id='settings-menu']/div/div/a[2]"));
+			elementLogDrop = driver.findElement(By.xpath(userDrop));
+			elementSignOut = driver.findElement(By.xpath(signOut));
 		}
 		
 //		Code me!
@@ -149,7 +163,6 @@ public class ActiveMonitoringStepDefs
 			logger.info("Submitting search " + arg1);
 			WebDriverWait wait = new WebDriverWait(driver, 60);
 			WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("q")));
-//			element = driver.findElement(By.name("q"));
 			for (char c : arg1.toCharArray()) {
 				element.sendKeys(String.valueOf(c));
 			}
