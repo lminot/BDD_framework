@@ -10,6 +10,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 import org.openqa.selenium.Platform;
@@ -22,13 +23,17 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+
 public class GridFactory
 {
 
+	private static final String configPropertyFilePath = "src/test/resources/config.properties";
 	private Logger logger = Log.getLogger(GridFactory.class);
-	//private static final String HUB_URL_PRIMARY = "http://10.1.200.233:4444/wd/hub";
-	private static final String HUB_URL_PRIMARY = "http://127.0.0.1:4444/wd/hub"; 
-	private static final String HUB_URL_SECONDARY = "http://10.1.210.77:4444/wd/hub";
+	
+	private static final String HUB_URL_PRIMARY = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "local");
+	private static final String HUB_URL_SECONDARY = System.getProperty(configPropertyFilePath, "grid");
+	
+	
 	private static final Integer TIMEOUT_SECONDS = 120;
 
 	public GridFactory()
@@ -37,6 +42,7 @@ public class GridFactory
 
 	private WebDriver getBrowser(DesiredCapabilities capability)
 	{
+		System.out.println(HUB_URL_PRIMARY);
 		WebDriver driver = null;
 		ExecutorService executor = Executors.newCachedThreadPool();
 		String hubUrl = HUB_URL_PRIMARY;
