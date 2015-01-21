@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 
+
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 import org.openqa.selenium.Platform;
@@ -31,8 +32,7 @@ public class GridFactory
 	private Logger logger = Log.getLogger(GridFactory.class);
 	
 	private static final String HUB_URL_PRIMARY = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "local");
-	private static final String HUB_URL_SECONDARY = System.getProperty(configPropertyFilePath, "grid");
-	
+	private static final String HUB_URL_SECONDARY = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "grid");	
 	
 	private static final Integer TIMEOUT_SECONDS = 120;
 
