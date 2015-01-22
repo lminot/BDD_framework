@@ -29,9 +29,11 @@ public class LocalBrowser
 	
 	public void initLocalIE() throws Exception
 	{
+		DesiredCapabilities cap = DesiredCapabilities.internetExplorer();
+		cap.setCapability("ignoreProtectedModeSettings", true);
 		File file = new File("IEDriverServer.exe");
 		System.setProperty("webdriver.ie.driver", file.getAbsolutePath());
-		driver = new InternetExplorerDriver();
+		driver = new InternetExplorerDriver(cap);
 		driver.manage().window().maximize();
 	}
 	
