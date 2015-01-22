@@ -25,10 +25,10 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.google.common.collect.ImmutableMap;
 import com.ticketmaster.bdd.util.GridFactory;
+import com.ticketmaster.bdd.util.LocalBrowser;
 import com.ticketmaster.testclient.TestClient;
 import com.ticketmaster.bdd.util.GetPropertyValue;
 
-import cucumber.api.PendingException;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.en.And;
@@ -39,6 +39,7 @@ import cucumber.api.java.en.When;
 public class ActiveMonitoringStepDefs 
 {
 	private static GridFactory gridFactory = new GridFactory();
+	private static LocalBrowser localBrowser = new LocalBrowser();
 	
 	private List<byte[]> screenGrabs = new ArrayList<byte[]>();
 	private WebDriver driver;
@@ -46,6 +47,10 @@ public class ActiveMonitoringStepDefs
 	Logger logger = Log.getLogger(ActiveMonitoringStepDefs.class);
 
 	private static final String configLocatorFilePath = "src/test/resources/locators.properties";
+	private static final String configEnvironmentFilePath = "src/test/resources/environmental.properties";
+	private static final String configPropertyFilePath = "src/test/resources/config.properties";
+	
+	private String driverLocation = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "location");
 	private String prodUser = GetPropertyValue.getValueFromPropertyFile(configLocatorFilePath, "ProdUsernameCss");
 	private String prodPass = GetPropertyValue.getValueFromPropertyFile(configLocatorFilePath, "ProdUserPassCss");
 	private String prodLogin = GetPropertyValue.getValueFromPropertyFile(configLocatorFilePath, "ProdSubmitCss");
@@ -65,24 +70,36 @@ public class ActiveMonitoringStepDefs
 
 		if (browser.toLowerCase().equals("firefox")) 
 		{
-			this.driver = gridFactory.getFirefoxInstance();
+			if(driverLocation.matches("grid"))
+				this.driver = gridFactory.getFirefoxInstance();
+			else if(driverLocation.matches("local"))
+				this.driver = localBrowser.getFirefoxInstance();
+			
 			logger.info("Returning instance of a firefox browser");
 		} 
 		else if (browser.toLowerCase().equals("chrome")) 
 		{
-			this.driver = gridFactory.getChromeInstance();
+			if(driverLocation.matches("grid"))
+				this.driver = gridFactory.getChromeInstance();
+			else if(driverLocation.matches("local"))
+				this.driver = localBrowser.getChromeInstance();
+			
 			logger.info("Returning instance of a chrome browser");
 		} 
-		else if (browser.toLowerCase().equals("internet explorer")) 
+		else if (browser.toLowerCase().equals("ie")) 
 		{
-			this.driver = gridFactory.getInternetExplorerInstance();
+			if(driverLocation.matches("grid"))
+				this.driver = gridFactory.getInternetExplorerInstance();
+			else if(driverLocation.matches("local"))
+				this.driver = localBrowser.getInternetExplorerInstance();
+			
 			logger.info("Returning instance of a internet explorer browser");
 		}
+		
 		this.driver = new Augmenter().augment(driver);
 		long current2 = System.currentTimeMillis();
 		logger.info("Current time: " + current2);
-		long time = current2 - current;
-
+//		long time = current2 - current;
 //    	postBrowserCallTimeToTSD(time, browser);
 		stepsPassed++;
 	}
@@ -90,9 +107,14 @@ public class ActiveMonitoringStepDefs
 	@And(value = "^I load a page", timeout = 60000)
 	public void search_for_the_term() throws Exception 
 	{
+		String page = "www.google.com"; //page defaulted to
+		
+		if(website.matches("prodPage"))
+			page = GetPropertyValue.getValueFromPropertyFile(configEnvironmentFilePath, "prodPage");
+			
 		try {
 			logger.info("Retrieving webpage");
-			this.driver.get("http://" + website);
+			this.driver.get("http://" + page);
 			logger.info("Webpage returned");
 			stepsPassed++;
 		} catch (Exception e) {
@@ -110,14 +132,8 @@ public class ActiveMonitoringStepDefs
 		WebElement elementPass = driver.findElement(By.cssSelector(prodPass));
 		WebElement elementSign = driver.findElement(By.cssSelector(prodLogin));
 		
-		for (char c : username.toCharArray()) 
-		{
-			elementUser.sendKeys(String.valueOf(c));
-		}
-		for (char c : password.toCharArray()) 
-		{
-			elementPass.sendKeys(String.valueOf(c));
-		}
+		elementUser.sendKeys(username);
+		elementPass.sendKeys(password);
 		
 		elementSign.click();
 		/*
@@ -137,18 +153,6 @@ public class ActiveMonitoringStepDefs
 		{
 			logger.warn(e.getMessage());
 		}
-
-		//Fails under assumption of element being there to check for
-//		if( driver.findElement(By.cssSelector("#portal-nav")).isDisplayed() )
-//		{
-//			layout = "topNav";
-//		}
-//		//Yet to be tested for functionality
-//		else if ( driver.findElement(By.cssSelector("#navigation-items")).isDisplayed() )
-//		{
-//			System.out.println("Side Nav is Portal format.");
-//			layout = "sideNav";
-//		}
 	}
 	
 	@Then("^I am on the login page$")
