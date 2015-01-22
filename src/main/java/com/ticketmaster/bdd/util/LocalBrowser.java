@@ -1,6 +1,9 @@
 package com.ticketmaster.bdd.util;
 
 import java.io.File;
+
+import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -12,6 +15,7 @@ public class LocalBrowser
 {
 	private static ChromeDriverService service;
 	private WebDriver driver;
+	Logger logger = Log.getLogger(LocalBrowser.class);
 	
 	public void initLocalChrome() throws Exception
 	{
