@@ -12,6 +12,9 @@ import java.util.concurrent.TimeoutException;
 
 
 
+
+
+
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 import org.openqa.selenium.Platform;
@@ -24,6 +27,8 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import com.ticketmsater.bdd.stepdefs.CommonStepDefs;
+
 
 public class GridFactory
 {
@@ -31,8 +36,18 @@ public class GridFactory
 	private static final String configPropertyFilePath = "src/test/resources/config.properties";
 	private Logger logger = Log.getLogger(GridFactory.class);
 	
-	private static final String HUB_URL_PRIMARY = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "local");
-	private static final String HUB_URL_SECONDARY = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "grid");	
+	private static final String HUB_URL_PRIMARY = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "localgrid");
+	private static final String HUB_URL_SECONDARY = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "grid");
+	
+	//Test area
+	private static final String configLocatorFilePath = "src/test/resources/locators.properties";
+	public String dLoc = GetPropertyValue.getValueFromPropertyFile(configLocatorFilePath, "location");
+	WebDriver driver = null;
+	public Future<Object> future;
+	public Callable<Object> task;
+	ExecutorService executor;
+	String hubUrl;
+	//-----------------
 	
 	private static final Integer TIMEOUT_SECONDS = 120;
 
@@ -41,14 +56,21 @@ public class GridFactory
 	}
 
 	private WebDriver getBrowser(DesiredCapabilities capability)
-	{
-		System.out.println(HUB_URL_PRIMARY);
-		WebDriver driver = null;
-		ExecutorService executor = Executors.newCachedThreadPool();
-		String hubUrl = HUB_URL_PRIMARY;
-		Callable<Object> task = new BrowserCreate(capability, hubUrl);
-		Future<Object> future = executor.submit(task);
-
+	{	
+		if(dLoc.matches("localgrid"))
+		{
+			System.out.println(HUB_URL_PRIMARY);
+//		WebDriver driver = null;
+//		ExecutorService executor = Executors.newCachedThreadPool();
+			executor = Executors.newCachedThreadPool();
+//		String hubUrl = HUB_URL_PRIMARY;
+			hubUrl = HUB_URL_PRIMARY;
+//		Callable<Object> task = new BrowserCreate(capability, hubUrl);
+			task = new BrowserCreate(capability, hubUrl);
+//		Future<Object> future = executor.submit(task);
+			future = executor.submit(task);
+		
+		
 		try
 		{
 			driver = (WebDriver) future.get(GridFactory.TIMEOUT_SECONDS, TimeUnit.SECONDS);
@@ -65,10 +87,15 @@ public class GridFactory
 		{
 			logger.warn(e.getMessage());
 		}
+		
+		}
 
-		if (driver == null)
+//		if (driver == null)
+		if (dLoc.matches("grid"))
 		{
 			logger.info("Browser is null, switch to backup Grid. Alerting team.");
+			System.out.println(HUB_URL_SECONDARY);
+			executor = Executors.newCachedThreadPool();  //addition
 			hubUrl = HUB_URL_SECONDARY;
 			task = new BrowserCreate(capability, hubUrl);
 			future = executor.submit(task);
