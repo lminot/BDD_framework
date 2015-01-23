@@ -38,19 +38,12 @@ import cucumber.api.java.en.When;
 
 public class ActiveMonitoringStepDefs 
 {
-	private static GridFactory gridFactory = new GridFactory();
-	private static LocalBrowser localBrowser = new LocalBrowser();
-	
 	private List<byte[]> screenGrabs = new ArrayList<byte[]>();
-	private WebDriver driver;
-	private String website;
+	private WebDriver driver = CommonStepDefs.driver;
 	Logger logger = Log.getLogger(ActiveMonitoringStepDefs.class);
 
 	private static final String configLocatorFilePath = "src/test/resources/locators.properties";
-	private static final String configEnvironmentFilePath = "src/test/resources/environmental.properties";
-	private static final String configPropertyFilePath = "src/test/resources/config.properties";
 	
-	private String driverLocation = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "location");
 	private String prodUser = GetPropertyValue.getValueFromPropertyFile(configLocatorFilePath, "ProdUsernameCss");
 	private String prodPass = GetPropertyValue.getValueFromPropertyFile(configLocatorFilePath, "ProdUserPassCss");
 	private String prodLogin = GetPropertyValue.getValueFromPropertyFile(configLocatorFilePath, "ProdSubmitCss");
@@ -59,71 +52,6 @@ public class ActiveMonitoringStepDefs
 	
 	private Integer stepsPassed = 0;
 	private String layout;
-
-	@Given("^that I have loaded \"([^\"]*)\" in \"([^\"]*)\"$")
-	public void that_I_have_loaded_in_a(String website, String browser) throws Throwable 
-	{
-		logger.info("Getting a new browser");
-		this.website = website;
-		long current = System.currentTimeMillis();
-		logger.info("Current time: " + current);
-
-		if (browser.toLowerCase().equals("firefox")) 
-		{
-			if(driverLocation.matches("grid"))
-				this.driver = gridFactory.getFirefoxInstance();
-			else if(driverLocation.matches("local"))
-				this.driver = localBrowser.getFirefoxInstance();
-			
-			logger.info("Returning instance of a firefox browser");
-		} 
-		else if (browser.toLowerCase().equals("chrome")) 
-		{
-			if(driverLocation.matches("grid"))
-				this.driver = gridFactory.getChromeInstance();
-			else if(driverLocation.matches("local"))
-				this.driver = localBrowser.getChromeInstance();
-			
-			logger.info("Returning instance of a chrome browser");
-		} 
-		else if (browser.toLowerCase().equals("ie")) 
-		{
-			if(driverLocation.matches("grid"))
-				this.driver = gridFactory.getInternetExplorerInstance();
-			else if(driverLocation.matches("local"))
-				this.driver = localBrowser.getInternetExplorerInstance();
-			
-			logger.info("Returning instance of a internet explorer browser");
-		}
-		
-		this.driver = new Augmenter().augment(driver);
-		long current2 = System.currentTimeMillis();
-		logger.info("Current time: " + current2);
-//		long time = current2 - current;
-//    	postBrowserCallTimeToTSD(time, browser);
-		stepsPassed++;
-	}
-
-	@And(value = "^I load a page", timeout = 60000)
-	public void search_for_the_term() throws Exception 
-	{
-		String page = "www.google.com"; //page defaulted to
-		
-		if(website.matches("prodPage"))
-			page = GetPropertyValue.getValueFromPropertyFile(configEnvironmentFilePath, "prodPage");
-			
-		try {
-			logger.info("Retrieving webpage");
-			this.driver.get("http://" + page);
-			logger.info("Webpage returned");
-			stepsPassed++;
-		} catch (Exception e) {
-			byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
-			screenGrabs.add(screenshot);
-			TestCase.assertTrue(false);
-			logger.info("Webpage failed");
-		}
-	}
   
 	@When("^I have logged in with \"(.*?)\" and \"(.*?)\"$")
 	public void that_I_have_logged_in_with_and(String username, String password) throws Throwable 
