@@ -10,11 +10,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-
-
-
-
-
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 import org.openqa.selenium.Platform;
@@ -27,75 +22,60 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import com.ticketmsater.bdd.stepdefs.CommonStepDefs;
-
 
 public class GridFactory
 {
-
-	private static final String configPropertyFilePath = "src/test/resources/config.properties";
 	private Logger logger = Log.getLogger(GridFactory.class);
 	
+	private static final String configPropertyFilePath = "src/test/resources/config.properties";
 	private static final String HUB_URL_PRIMARY = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "localgrid");
 	private static final String HUB_URL_SECONDARY = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "grid");
-	
-	//Test area
 	private static final String configLocatorFilePath = "src/test/resources/locators.properties";
 	public String dLoc = GetPropertyValue.getValueFromPropertyFile(configLocatorFilePath, "location");
+	
 	WebDriver driver = null;
 	public Future<Object> future;
 	public Callable<Object> task;
 	ExecutorService executor;
 	String hubUrl;
-	//-----------------
 	
 	private static final Integer TIMEOUT_SECONDS = 120;
 
-	public GridFactory()
-	{
-	}
+	public GridFactory(){}
 
 	private WebDriver getBrowser(DesiredCapabilities capability)
 	{	
 		if(dLoc.matches("localgrid"))
 		{
 			System.out.println(HUB_URL_PRIMARY);
-//		WebDriver driver = null;
-//		ExecutorService executor = Executors.newCachedThreadPool();
 			executor = Executors.newCachedThreadPool();
-//		String hubUrl = HUB_URL_PRIMARY;
 			hubUrl = HUB_URL_PRIMARY;
-//		Callable<Object> task = new BrowserCreate(capability, hubUrl);
 			task = new BrowserCreate(capability, hubUrl);
-//		Future<Object> future = executor.submit(task);
 			future = executor.submit(task);
 		
-		
-		try
-		{
-			driver = (WebDriver) future.get(GridFactory.TIMEOUT_SECONDS, TimeUnit.SECONDS);
-		}
-		catch (TimeoutException ex)
-		{
-			logger.warn("Timed out");
-		}
-		catch (InterruptedException e)
-		{
-			logger.warn(e.getMessage());
-		}
-		catch (ExecutionException e)
-		{
-			logger.warn(e.getMessage());
-		}
-		
+			try
+			{
+				driver = (WebDriver) future.get(GridFactory.TIMEOUT_SECONDS, TimeUnit.SECONDS);
+			}
+			catch (TimeoutException ex)
+			{
+				logger.warn("Timed out");
+			}
+			catch (InterruptedException e)
+			{
+				logger.warn(e.getMessage());
+			}
+			catch (ExecutionException e)
+			{
+				logger.warn(e.getMessage());
+			}
 		}
 
-//		if (driver == null)
 		if (dLoc.matches("grid"))
 		{
 			logger.info("Browser is null, switch to backup Grid. Alerting team.");
 			System.out.println(HUB_URL_SECONDARY);
-			executor = Executors.newCachedThreadPool();  //addition
+			executor = Executors.newCachedThreadPool();
 			hubUrl = HUB_URL_SECONDARY;
 			task = new BrowserCreate(capability, hubUrl);
 			future = executor.submit(task);
@@ -117,18 +97,17 @@ public class GridFactory
 				logger.warn(e.getMessage());
 			}
 		}
+		
 		driver.manage().window().maximize();
 		return driver;
 	}
 
 	public WebDriver getInternetExplorerInstance() throws Exception
 	{
-
 		DesiredCapabilities capability = DesiredCapabilities.internetExplorer();
 		capability.setCapability("takeScreenshot", true);
 		capability.setPlatform(Platform.WINDOWS);
 		capability.setBrowserName("internet explorer");
-
 		capability.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
 		capability.setCapability("takeScreenshot", true);
 
@@ -137,9 +116,7 @@ public class GridFactory
 
 	public WebDriver getFirefoxInstance() throws Exception
 	{
-
 		return getFirefoxInstance(null);
-
 	}
 	
 	/**
@@ -159,10 +136,10 @@ public class GridFactory
 		}
 		DesiredCapabilities capability = DesiredCapabilities.firefox();
 		capability.setCapability("takeScreenshot", true);
-		capability.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true); //TODO DPA move to default capability
+		capability.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 		capability.setCapability(FirefoxDriver.PROFILE, profile);
+		
 		return getBrowser(capability);
-
 	}
 
 	public WebDriver getChromeInstance() throws Exception
@@ -186,11 +163,10 @@ public class GridFactory
 		{
 			options = pOtions;
 		}
-				
 		options.addArguments("--start-maximized");
-
 		capability.setCapability(ChromeOptions.CAPABILITY, options);
 		capability.setCapability("takeScreenshot", true);
+		
 		return getBrowser(capability);
 	}
 

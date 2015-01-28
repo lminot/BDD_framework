@@ -19,20 +19,16 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.google.common.collect.ImmutableMap;
-import com.ticketmaster.bdd.util.GridFactory;
-import com.ticketmaster.bdd.util.LocalBrowser;
 import com.ticketmaster.testclient.TestClient;
 import com.ticketmaster.bdd.util.GetPropertyValue;
 
+import cucumber.api.PendingException;
 import cucumber.api.Scenario;
-import cucumber.api.java.After;
 import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
@@ -83,8 +79,8 @@ public class ActiveMonitoringStepDefs
 		}
 	}
 	
-	@Then("^I am on the login page$")
-	public void i_am_on_the_login_page() throws Throwable 
+	@And("^I attempt to log out$")
+	public void i_attempt_to_log_out() throws Throwable 
 	{
 		WebDriverWait wait = new WebDriverWait(driver, 30);
 		WebElement elementLogDrop = null;
@@ -93,16 +89,20 @@ public class ActiveMonitoringStepDefs
 		if( layout.matches("topNav") )
 		{
 			elementLogDrop = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(userDrop)));
-			
 			elementLogDrop = driver.findElement(By.xpath(userDrop));
 			elementSignOut = driver.findElement(By.xpath(signOut));
 		}
 		
-//		Code me!
-//		else if( layout.matches("sideNav") ) {}
+		//TODO code for SideNav layout
 		
 		elementLogDrop.click();
 		elementSignOut.click();
+	}
+	
+	@Then("^I am on the login page$")
+	public void i_am_on_the_login_page() throws Throwable 
+	{
+		embedScreenshot(null);
 	}
 
 	@Then(value = "^search for the term \"([^\"]*)\"$", timeout = 60000)
@@ -184,10 +184,8 @@ public class ActiveMonitoringStepDefs
 		}
 	}
 
-	@After
 	public void embedScreenshot(Scenario scenario) 
 	{
-//    	postStepsPassingToTSD(stepsPassed);
 		for (byte[] screenshot : screenGrabs) {
 			scenario.embed(screenshot, "image/png");
 		}

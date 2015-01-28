@@ -33,9 +33,7 @@ public class GetPropertyValue {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+		
     	return value.trim();
     }
-    
-    
-
 }

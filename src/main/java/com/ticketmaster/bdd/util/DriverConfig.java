@@ -17,7 +17,7 @@ public class DriverConfig
 	{
 		if (browser.toLowerCase().equals("firefox")) 
 		{
-			if(driverLocation.matches("grid") || driverLocation.matches("localgrid")) //adds
+			if(driverLocation.matches("grid") || driverLocation.matches("localgrid"))
 				driver = gridFactory.getFirefoxInstance();
 			else if(driverLocation.matches("local"))
 				driver = localBrowser.getFirefoxInstance();
@@ -26,7 +26,7 @@ public class DriverConfig
 		} 
 		else if (browser.toLowerCase().equals("chrome")) 
 		{
-			if(driverLocation.matches("grid" ) || driverLocation.matches("localgrid")) //adds
+			if(driverLocation.matches("grid" ) || driverLocation.matches("localgrid"))
 				driver = gridFactory.getChromeInstance();
 			else if(driverLocation.matches("local"))
 				driver = localBrowser.getChromeInstance();
@@ -35,7 +35,7 @@ public class DriverConfig
 		} 
 		else if (browser.toLowerCase().equals("ie")) 
 		{
-			if(driverLocation.matches("grid") || driverLocation.matches("localgrid"))  //adds
+			if(driverLocation.matches("grid") || driverLocation.matches("localgrid"))
 				driver = gridFactory.getInternetExplorerInstance();
 			else if(driverLocation.matches("local"))
 				driver = localBrowser.getInternetExplorerInstance();
