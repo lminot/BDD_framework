@@ -7,16 +7,14 @@ import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 
 import wslite.http.HTTPResponse;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import com.sun.jersey.api.client.ClientResponse;
 import com.ticketmaster.bdd.util.GetPropertyValue;
 import com.ticketmaster.bdd.util.RestClient;
 
-import cucumber.api.PendingException;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
+import cucumber.api.java.en.*;
+
 
 public class RESTActiveMonitoringStepDefs 
 {
@@ -37,7 +35,6 @@ public class RESTActiveMonitoringStepDefs
 		response = RestClient.post(userCreds, reqHeader, "https://" + baseURL + "/login/check-login");
 	}
 	
-	@SuppressWarnings("deprecation")
 	@When("^I attempt to logout$")
 	public void i_return_to_tickmaster_login() throws Throwable 
 	{
