@@ -22,7 +22,6 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-
 public class GridFactory
 {
 	private Logger logger = Log.getLogger(GridFactory.class);
@@ -31,7 +30,7 @@ public class GridFactory
 	private static final String HUB_URL_PRIMARY = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "localgrid");
 	private static final String HUB_URL_SECONDARY = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "grid");
 	private static final String configLocatorFilePath = "src/test/resources/locators.properties";
-	public String dLoc = GetPropertyValue.getValueFromPropertyFile(configLocatorFilePath, "location");
+	public String gridLoctaion = GetPropertyValue.getValueFromPropertyFile(configLocatorFilePath, "location");
 	
 	WebDriver driver = null;
 	public Future<Object> future;
@@ -43,35 +42,25 @@ public class GridFactory
 
 	public GridFactory(){}
 
+	/**
+	 * Filter and Initialize remote (grid) driver configs
+	 * @author Lucien.Minot
+	 * @param capability
+	 * @return
+	 */
 	private WebDriver getBrowser(DesiredCapabilities capability)
 	{	
-		if(dLoc.matches("localgrid"))
+		//Given the local machine has its own grid to run off of
+		if(gridLoctaion.matches("localgrid"))
 		{
 			System.out.println(HUB_URL_PRIMARY);
 			executor = Executors.newCachedThreadPool();
 			hubUrl = HUB_URL_PRIMARY;
 			task = new BrowserCreate(capability, hubUrl);
 			future = executor.submit(task);
-		
-			try
-			{
-				driver = (WebDriver) future.get(GridFactory.TIMEOUT_SECONDS, TimeUnit.SECONDS);
-			}
-			catch (TimeoutException ex)
-			{
-				logger.warn("Timed out");
-			}
-			catch (InterruptedException e)
-			{
-				logger.warn(e.getMessage());
-			}
-			catch (ExecutionException e)
-			{
-				logger.warn(e.getMessage());
-			}
 		}
-
-		if (dLoc.matches("grid"))
+		//Active monitoring will contact the Grid for testing
+		else if (gridLoctaion.matches("grid"))
 		{
 			logger.info("Browser is null, switch to backup Grid. Alerting team.");
 			System.out.println(HUB_URL_SECONDARY);
@@ -79,23 +68,23 @@ public class GridFactory
 			hubUrl = HUB_URL_SECONDARY;
 			task = new BrowserCreate(capability, hubUrl);
 			future = executor.submit(task);
+		}
 
-			try
-			{
-				driver = (WebDriver) future.get(GridFactory.TIMEOUT_SECONDS, TimeUnit.SECONDS);
-			}
-			catch (TimeoutException ex)
-			{
+		try
+		{
+			driver = (WebDriver) future.get(GridFactory.TIMEOUT_SECONDS, TimeUnit.SECONDS);
+		}
+		catch (TimeoutException ex)
+		{
 				logger.warn("Timed out");
-			}
-			catch (InterruptedException e)
-			{
-				logger.warn(e.getMessage());
-			}
-			catch (ExecutionException e)
-			{
-				logger.warn(e.getMessage());
-			}
+		}
+		catch (InterruptedException e)
+		{
+			logger.warn(e.getMessage());
+		}
+		catch (ExecutionException e)
+		{
+			logger.warn(e.getMessage());
 		}
 		
 		driver.manage().window().maximize();

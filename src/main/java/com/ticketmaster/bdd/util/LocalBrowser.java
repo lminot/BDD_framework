@@ -8,6 +8,11 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+/**
+ * Initializing local machine browser driver
+ * In Active Monitoring, local drivers are included in project
+ * @author Derick.Cornejo
+ */
 public class LocalBrowser
 {
 	private static ChromeDriverService service;
