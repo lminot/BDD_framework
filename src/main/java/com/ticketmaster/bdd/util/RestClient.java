@@ -391,14 +391,4 @@ public class RestClient {
 		return response;
 	}
 
-	//authenticates a Tap user 
-	private static void authenticateUser(Client client) {
-//		String tapUser = PropertyUtil.getIntQAData("TapUserEmail");
-//		String password = PropertyUtil.getIntQAData("TapUserPassword");
-		
-//		client.addFilter(new HTTPBasicAuthFilter(tapUser, password));
-		
-		
-	}
-
 }
