@@ -28,6 +28,7 @@ public class GridFactory
 	
 	private static final String configPropertyFilePath = "src/test/resources/config.properties";
 	private static final String HUB_URL_PRIMARY = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "localgrid");
+	private static final String HUB_URL_PRIMARY_CHROME = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "chromeGrid");
 	private static final String HUB_URL_SECONDARY = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "grid");
 	private static final String configLocatorFilePath = "src/test/resources/locators.properties";
 	public String gridLoctaion = GetPropertyValue.getValueFromPropertyFile(configLocatorFilePath, "location");
@@ -56,6 +57,14 @@ public class GridFactory
 			System.out.println(HUB_URL_PRIMARY);
 			executor = Executors.newCachedThreadPool();
 			hubUrl = HUB_URL_PRIMARY;
+			task = new BrowserCreate(capability, hubUrl);
+			future = executor.submit(task);
+		}
+		else if(gridLoctaion.matches("chromeGrid"))
+		{
+			System.out.println(HUB_URL_PRIMARY_CHROME);
+			executor = Executors.newCachedThreadPool();
+			hubUrl = HUB_URL_PRIMARY_CHROME;
 			task = new BrowserCreate(capability, hubUrl);
 			future = executor.submit(task);
 		}

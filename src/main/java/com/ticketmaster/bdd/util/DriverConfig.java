@@ -26,7 +26,7 @@ public class DriverConfig
 		} 
 		else if (browser.toLowerCase().equals("chrome")) 
 		{
-			if(driverLocation.matches("grid" ) || driverLocation.matches("localgrid"))
+			if(driverLocation.matches("grid" ) || driverLocation.matches("chromeGrid") || driverLocation.matches("localgrid") )
 				driver = gridFactory.getChromeInstance();
 			else if(driverLocation.matches("local"))
 				driver = localBrowser.getChromeInstance();

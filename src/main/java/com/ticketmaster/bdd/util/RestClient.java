@@ -52,10 +52,8 @@ public class RestClient {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	 
 		return response;
 	}
-	
 	/**
 	 * post json request
 	 * @param resource - REST resource
@@ -69,8 +67,6 @@ public class RestClient {
 		ClientResponse response=null;
 		try {
 			Client client = Client.create();
-			
-			authenticateUser(client);
 			// filter is for printing  request and response in the console.
 			client.addFilter(new LoggingFilter(System.out));
 			WebResource webResource = client.resource(url);
@@ -90,11 +86,8 @@ public class RestClient {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		return response;
-	}
-	
-	
+	}	
 	/**
 	 * post txt/json request
 	 * @param resource - REST resource
@@ -127,7 +120,6 @@ public class RestClient {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		return response;
 	}
 	
@@ -143,7 +135,6 @@ public class RestClient {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		return response;
 	}
 	
@@ -153,7 +144,6 @@ public class RestClient {
 		ClientResponse response=null;
 		try {
 			Client client = Client.create();
-			authenticateUser(client);
 			// filter is for printing  request and response in the console.
 			client.addFilter(new LoggingFilter(System.out));
 			WebResource webResource = client.resource(url);
@@ -173,7 +163,6 @@ public class RestClient {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		return response;
 	}
 	
@@ -181,8 +170,7 @@ public class RestClient {
 	{
 		String output=null;
 		ClientResponse response=null;
-		//System.out.println("endPoint=  " + url);
-		
+		System.out.println("endPoint=  " + url);
 		try {
 			Client client = Client.create();
 			// filter is for printing  request and response in the console.
@@ -201,14 +189,10 @@ public class RestClient {
 
 			response = builder.type(MediaType.APPLICATION_JSON).put(ClientResponse.class, requestBody);
 		  } catch (Exception e) {
-	 
-			e.printStackTrace();
-	 
+			  e.printStackTrace();
 		  }
-	 
 		return response;
 	}
-	
 	
 	public static ClientResponse putXML(String requestBody,String url)throws Exception
 	{
@@ -222,9 +206,7 @@ public class RestClient {
 
 			response = builder.type(MediaType.APPLICATION_XML).put(ClientResponse.class, requestBody);
 		  } catch (Exception e) {
-	 
-			e.printStackTrace();
-	 
+			  e.printStackTrace();
 		  }	 
 		return response;
 	}
@@ -237,7 +219,6 @@ public class RestClient {
 			Client client = Client.create();
 			client.addFilter(new LoggingFilter(System.out));
 			
-			authenticateUser(client);
 			
 			WebResource webResource = client.resource(url);
 
@@ -245,11 +226,11 @@ public class RestClient {
 
 			response = builder.type(MediaType.APPLICATION_JSON).put(ClientResponse.class, requestBody);
 		  } catch (Exception e) {	 
-			e.printStackTrace();	 
+			  e.printStackTrace();	 
 		  }
-	 
 		return response;
 	}
+	
 	public static ClientResponse putJSON(String requestBody,String url,Map reqHeader)throws Exception
 	{
 		String output=null;
@@ -257,9 +238,7 @@ public class RestClient {
 		try {
 			Client client = Client.create();
 			client.addFilter(new LoggingFilter(System.out));
-			
-			authenticateUser(client);
-			
+
 			WebResource webResource = client.resource(url);
 
 			WebResource.Builder builder = webResource.accept(MediaType.APPLICATION_JSON, "");
@@ -272,9 +251,8 @@ public class RestClient {
 						}
 			response = builder.type(MediaType.APPLICATION_JSON).put(ClientResponse.class, requestBody);
 		  } catch (Exception e) {	 
-			e.printStackTrace();	 
+			  e.printStackTrace();	 
 		  }
-	 
 		return response;
 	}
 	
@@ -304,10 +282,10 @@ public class RestClient {
 				}
 			}
 		}
- 
 		return sb.toString();
  
 	}
+	
 	public static ClientResponse delete(Map header,String url)throws Exception
 	{
 		String output=null;
@@ -318,13 +296,11 @@ public class RestClient {
 			WebResource.Builder builder = webResource.accept(MediaType.APPLICATION_XML, "");
 			response = builder.type(MediaType.APPLICATION_XML).delete(ClientResponse.class);
 		  } catch (Exception e) {
-	 
-			e.printStackTrace();
-	 
+			  e.printStackTrace();
 		  }
-	 
 		return response;
 	}
+	
 	public static ClientResponse deleteXML(String url)throws Exception
 	{
 		String output=null;
@@ -335,13 +311,11 @@ public class RestClient {
 			WebResource.Builder builder = webResource.accept(MediaType.APPLICATION_XML, "");
 			response = builder.type(MediaType.APPLICATION_XML).delete(ClientResponse.class);
 		  } catch (Exception e) {
-	 
-			e.printStackTrace();
-	 
+			  e.printStackTrace();
 		  }
-	 
 		return response;
 	}
+	
 	public static ClientResponse deleteJSON(String url)throws Exception
 	{
 		String output=null;
@@ -352,13 +326,11 @@ public class RestClient {
 			WebResource.Builder builder = webResource.accept(MediaType.APPLICATION_JSON, "");
 			response = builder.type(MediaType.APPLICATION_JSON).delete(ClientResponse.class);
 		  } catch (Exception e) {
-	 
-			e.printStackTrace();
-	 
+			  e.printStackTrace();
 		  }
-	 
 		return response;
 	}
+	
 	public static ClientResponse getXML(String url)throws Exception
 	{
 		String output=null;
@@ -369,13 +341,11 @@ public class RestClient {
 			WebResource.Builder builder = webResource.accept(MediaType.APPLICATION_XML, "");
 			response = builder.type(MediaType.APPLICATION_XML).get(ClientResponse.class);
 		  } catch (Exception e) {
-	 
-			e.printStackTrace();
-	 
+			  e.printStackTrace();
 		  }
-	 
 		return response;
 	}
+	
 	public static ClientResponse getJSON(String url)throws Exception
 	{
 		String output=null;
@@ -386,7 +356,7 @@ public class RestClient {
 			WebResource.Builder builder = webResource.accept(MediaType.APPLICATION_JSON, "");
 			response = builder.type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
 		  } catch (Exception e) {
-			e.printStackTrace();
+			  e.printStackTrace();
 		  }
 		return response;
 	}
