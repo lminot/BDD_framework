@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<zabbix xmlns="http://git.tm.tmcs/platform/platform-xml-schema/zabbix"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://git.tm.tmcs/platform/platform-xml-schema/zabbix http://git.tm.tmcs/platform/platform-xml-schema/raw/master/src/main/resources/xsd/zabbix/zabbix-2.2.0.xsd">
+    <!--Please visit https://contegixapp1.livenation.com/confluence/display/PLEN/Using+QADash+UI+to+create+zabbix.xml to generate your zabbix.xml-->
+    <server_class>app</server_class>
+    <server_product>tma</server_product>
+    <distro_list>Lucien.Minot@Ticketmaster.com;Nihar.Amin@Ticketmaster.com</distro_list>
+    <runbook_url>https://contegixapp1.livenation.com/confluence/display/MY_TEAM/Runbook</runbook_url>
+    <healthcheck>true</healthcheck>
+    <!-- Optional tag for custom healthcheck endpoint -->
+    <healthcheck_url>https://access.ticketmaster.com/health/healthcheck</healthcheck_url>
+    <!-- Optional tag for defining number of failed healthchecks before sending alerts. Defaulted to 1 if not set -->
+    <!--<healthcheck_retry_count>1</healthcheck_retry_count>-->
+    <oncall_group>Quality Engineering Hollywood</oncall_group>
+    <enable_TOC_alerts_prod>false</enable_TOC_alerts_prod>
+    <enable_TOC_alerts_int>false</enable_TOC_alerts_int>
+    <items>
+        <item>
+            <name>app_service.rest_resource.exec.counter.count.http_method-GET.path_pattern-__error.path__error_</name>
+            <key>app_service.rest_resource.exec.counter.count.http_method-GET.path_pattern-__error.path__error_</key>
+            <units></units>
+            <trigger-expression>
+                <operator>gt</operator>
+                <function></function>
+                <arg></arg>
+                <threshold>1000000</threshold>
+            </trigger-expression>
+        </item>    
+    </items>
+    <rundeck_project>MyTeam</rundeck_project>
+    <rundeck_job_path>support/tier1/com.ticketmaster.myTeam*</rundeck_job_path>
+    <rundeck_job_name>job-name</rundeck_job_name>
+    <rundeck_job_url>http://sample/link/to/rundeck/job</rundeck_job_url>
+    <rundeck_job_description>Any additional description you want TOC to handle the alert or Rundeck job</rundeck_job_description>
+</zabbix>
