@@ -3,7 +3,7 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://git.tm.tmcs/platform/platform-xml-schema/cucumber http://git.tm.tmcs/platform/platform-xml-schema/raw/master/src/main/resources/xsd/cucumber/cucumber_config-1.0.xsd">
   <jdk>JDK7</jdk>
-  <interval>30m</interval>
+  <interval>15m</interval>
   <target-hostname>app1.tma.jash1.syseng.tmcs</target-hostname>
   <cucumber-tag>tm360-login</cucumber-tag>
 </cucumber>
