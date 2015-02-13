@@ -5,7 +5,7 @@
     <!--Please visit https://contegixapp1.livenation.com/confluence/display/PLEN/Using+QADash+UI+to+create+zabbix.xml to generate your zabbix.xml-->
     <server_class>app</server_class>
     <server_product>tma</server_product>
-    <distro_list>Lucien.Minot@Ticketmaster.com;Nihar.Amin@Ticketmaster.com</distro_list>
+    <distro_list>Lucien.Minot@Ticketmaster.com;Nihar.Amin@Ticketmaster.com;DerickCornejo@LiveNation.com</distro_list>
     <runbook_url>https://contegixapp1.livenation.com/confluence/display/MY_TEAM/Runbook</runbook_url>
     <healthcheck>true</healthcheck>
     <!-- Optional tag for custom healthcheck endpoint -->
