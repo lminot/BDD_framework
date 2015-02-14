@@ -5,12 +5,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 
 public class GetPropertyValue {
 
-    private static final Logger log = Logger.getLogger(GetPropertyValue.class.getName());
+    //private static final Logger log = Logger.getLogger(GetPropertyValue.class.getName());
 	private static InputStream input = null;
 	private static Properties prop = new Properties();
 	

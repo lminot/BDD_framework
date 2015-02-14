@@ -1,4 +1,4 @@
-package com.ticketmaster.bdd.acceptance;
+package com.ticketmaster.bdd.runner;
 
 import org.junit.runner.RunWith;
 

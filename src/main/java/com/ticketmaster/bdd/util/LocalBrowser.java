@@ -1,12 +1,13 @@
 package com.ticketmaster.bdd.util;
 
 import java.io.File;
+
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriverService;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
 
 /**
  * Initializing local machine browser driver
@@ -15,16 +16,17 @@ import org.openqa.selenium.remote.RemoteWebDriver;
  */
 public class LocalBrowser
 {
-	private static ChromeDriverService service;
 	private WebDriver driver;
 	
-	public void initLocalChrome() throws Exception
-	{
-		service = new ChromeDriverService.Builder().usingDriverExecutable(new File("chromedriver.exe")).usingAnyFreePort().build();
-		service.start();
-		driver = new RemoteWebDriver(service.getUrl(), DesiredCapabilities.chrome());
-		driver.manage().window().maximize();
-	}
+	public void initLocalChrome() throws Exception {
+
+		DesiredCapabilities capability = DesiredCapabilities.chrome();
+		ChromeOptions options = new ChromeOptions();
+		options.addArguments("--start-maximized");
+		capability.setCapability(ChromeOptions.CAPABILITY, options);
+		capability.setCapability("takeScreenshot", true);
+		driver = new ChromeDriver(capability);	
+	} 
 	
 	public void initLocalFireFox() throws Exception
 	{
