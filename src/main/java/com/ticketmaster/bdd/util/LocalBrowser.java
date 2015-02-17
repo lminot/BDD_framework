@@ -23,6 +23,7 @@ public class LocalBrowser
 		DesiredCapabilities capability = DesiredCapabilities.chrome();
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--start-maximized");
+		System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
 		capability.setCapability(ChromeOptions.CAPABILITY, options);
 		capability.setCapability("takeScreenshot", true);
 		driver = new ChromeDriver(capability);	
