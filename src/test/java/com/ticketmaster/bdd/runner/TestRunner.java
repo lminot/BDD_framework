@@ -1,6 +1,10 @@
 package com.ticketmaster.bdd.runner;
 
+import org.junit.AfterClass;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.WebDriver;
+
+import com.ticketmsater.bdd.stepdefs.CommonStepDefs;
 
 import cucumber.api.CucumberOptions;
 import cucumber.api.junit.Cucumber;
@@ -22,5 +26,13 @@ import cucumber.api.junit.Cucumber;
 		)
 		//@tm360-login, @am-rest-login
 public class TestRunner {
-
+	
+	@AfterClass
+	public static void tearDown() {
+		WebDriver driver = CommonStepDefs.driver;
+		
+		if (driver != null )
+			driver.close();
+		    driver.quit();		    
+	}
 }
