@@ -1,5 +1,8 @@
 package com.ticketmsater.bdd.stepdefs;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.eclipse.jetty.util.log.Log;
@@ -11,6 +14,8 @@ import org.openqa.selenium.remote.Augmenter;
 import com.ticketmaster.bdd.util.DriverConfig;
 
 import cucumber.api.PendingException;
+import cucumber.api.Scenario;
+import cucumber.api.java.After;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -20,6 +25,7 @@ public class CommonStepDefs
 {
 	Logger logger = Log.getLogger(CommonStepDefs.class);
 	private static DriverConfig driverConfig = new DriverConfig();
+	private List<byte[]> screenGrabs = new ArrayList<byte[]>();
 	
 	public static WebDriver driver;
 	public static String website;
@@ -32,9 +38,9 @@ public class CommonStepDefs
 		long current = System.currentTimeMillis();
 		logger.info("Current time: " + current);
 
-		CommonStepDefs.driver = driverConfig.driverConfig(driver, browser);
+		this.driver = driverConfig.driverConfig(driver, browser);
 		
-		CommonStepDefs.driver = new Augmenter().augment(driver);
+		//CommonStepDefs.driver = new Augmenter().augment(driver);
 		long current2 = System.currentTimeMillis();
 		logger.info("Current time: " + current2);
 	}
@@ -44,7 +50,7 @@ public class CommonStepDefs
 	{
 		try {
 			logger.info("Retrieving webpage");
-			CommonStepDefs.driver.get("http://" + website);
+			this.driver.get("http://" + website);
 			logger.info("Webpage returned");
 		} catch (Exception e) {
 			TestCase.assertTrue(false);
@@ -58,4 +64,16 @@ public class CommonStepDefs
 		int returnedCode = RESTActiveMonitoringStepDefs.response.getStatus();		
 	    Assert.assertEquals(statusCode, returnedCode);
 	}
-}
+	
+	 @After
+	  public void embedScreenshot(Scenario scenario) {
+	   // postStepsPassingToTSD(stepsPassed);
+	    for (byte[] screenshot : screenGrabs) {
+	      scenario.embed(screenshot, "image/png");
+	    }
+	    if (driver != null){
+	      this.driver.close();
+	      this.driver.quit();
+	    }
+	  }
+   }
