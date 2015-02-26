@@ -1,16 +1,11 @@
 package com.ticketmsater.bdd.stepdefs;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 import junit.framework.TestCase;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 import org.openqa.selenium.By;
@@ -22,12 +17,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.google.common.collect.ImmutableMap;
-import com.ticketmaster.testclient.TestClient;
 import com.ticketmaster.bdd.util.GetPropertyValue;
 
-import cucumber.api.PendingException;
-import cucumber.api.Scenario;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -46,12 +37,12 @@ public class ActiveMonitoringStepDefs
 	private String userDrop = GetPropertyValue.getValueFromPropertyFile(configLocatorFilePath, "ProdUserDrop");
 	private String signOut = GetPropertyValue.getValueFromPropertyFile(configLocatorFilePath, "ProdSignOut");
 	
-	private Integer stepsPassed = 0;
 	private String layout;
   
 	@When("^I have logged in with \"(.*?)\" and \"(.*?)\"$")
 	public void that_I_have_logged_in_with_and(String username, String password) throws Throwable 
 	{	
+		Thread.sleep(5000);
 		WebElement elementUser = driver.findElement(By.cssSelector(prodUser));
 		WebElement elementPass = driver.findElement(By.cssSelector(prodPass));
 		WebElement elementSign = driver.findElement(By.cssSelector(prodLogin));
@@ -60,9 +51,11 @@ public class ActiveMonitoringStepDefs
 		elementPass.sendKeys(password);
 		
 		elementSign.click();
+		CommonStepDefs.stepsPassed++;
 		/*
 		 * Check for layout format to determine future functionality
 		 */
+		 
 		try {
 			driver.findElement(By.cssSelector("#navigation-items"));
 			layout = "sideNav";
@@ -85,7 +78,7 @@ public class ActiveMonitoringStepDefs
 		WebDriverWait wait = new WebDriverWait(driver, 30);
 		WebElement elementLogDrop = null;
 		WebElement elementSignOut = null;
-
+       
 		if( layout.matches("topNav") )
 		{
 			elementLogDrop = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(userDrop)));
@@ -97,12 +90,14 @@ public class ActiveMonitoringStepDefs
 		
 		elementLogDrop.click();
 		elementSignOut.click();
+		CommonStepDefs.stepsPassed++;
 	}
 	
 	@Then("^I am on the login page$")
 	public void i_am_on_the_login_page() throws Throwable 
 	{
-		embedScreenshot(null);
+		//embedScreenshot(null);
+		CommonStepDefs.stepsPassed++;
 	}
 
 	@Then(value = "^search for the term \"([^\"]*)\"$", timeout = 60000)
@@ -120,7 +115,7 @@ public class ActiveMonitoringStepDefs
 			logger.info("Search submitted");
 			byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
 			screenGrabs.add(screenshot);
-			stepsPassed++;
+			CommonStepDefs.stepsPassed++;
 		} catch (Exception e) {
 			logger.warn(e.getMessage());
 			byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
@@ -129,68 +124,5 @@ public class ActiveMonitoringStepDefs
 		} finally {
 			logger.info("Done search");
 		}
-	}
-
-	private void postStepsPassingToTSD(Integer stepsPassed) 
-	{
-		long timestamp = System.currentTimeMillis() / 1000;
-		ObjectMapper om = new ObjectMapper();
-		Map<String, Object> metric = new HashMap<String, Object>();
-		metric.put("metric", "beta.grid.steps.passed");
-		metric.put("timestamp", timestamp);
-		metric.put("value", stepsPassed);
-		metric.put("tags", ImmutableMap.of("host", "selenium.grid.beta"));
-
-		String json;
-		try {
-			json = om.writeValueAsString(metric);
-			logger.info(json);
-			TestClient.post("http://tsd.dev.cloudsys.tmcs/api/put", json, "application/json");
-		} catch (JsonGenerationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	private void postBrowserCallTimeToTSD(long millis, String browser) 
-	{
-		long timestamp = System.currentTimeMillis() / 1000;
-
-		ObjectMapper om = new ObjectMapper();
-		Map<String, Object> metric = new HashMap<String, Object>();
-		metric.put("metric", "beta.grid.browser.instantiation.time");
-		metric.put("timestamp", timestamp);
-		metric.put("value", millis);
-		metric.put("tags", ImmutableMap.of("host", "selenium.grid.beta"));
-		metric.put("tags", ImmutableMap.of("browser", browser.replaceAll("\\s+", ".")));
-
-		String json;
-		try {
-			json = om.writeValueAsString(metric);
-			logger.info(json);
-			TestClient.post("http://tsd.dev.cloudsys.tmcs/api/put", json, "application/json");
-		} catch (JsonGenerationException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void embedScreenshot(Scenario scenario) 
-	{
-		for (byte[] screenshot : screenGrabs) {
-			scenario.embed(screenshot, "image/png");
-		}
-		if (driver != null)
-			this.driver.close();
-		this.driver.quit();
 	}
 }
