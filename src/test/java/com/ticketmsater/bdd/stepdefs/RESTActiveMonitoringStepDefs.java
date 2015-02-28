@@ -7,11 +7,13 @@ import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 
 import wslite.http.HTTPResponse;
+
 import org.junit.Assert;
 
 import com.sun.jersey.api.client.ClientResponse;
 import com.ticketmaster.bdd.util.GetPropertyValue;
 import com.ticketmaster.bdd.util.RestClient;
+import com.ticketmaster.bdd.util.TSD_Injector;
 
 import cucumber.api.java.en.*;
 
@@ -26,21 +28,39 @@ public class RESTActiveMonitoringStepDefs
 	private String userCreds = GetPropertyValue.getValueFromPropertyFile(configConfigFilePath, "luccred");
 	
 	public static ClientResponse response=null;
-	public static HTTPResponse resp = null;
+	public static HTTPResponse HTTPresponse = null;
+	public long currentTime = 0;
+	public long newCurrentTime = 0;
+	
 	
 	@Given("^I execute a POST to login to tm360$")
 	public void i_execute_a_POST_to_the_ticketmaster_login() throws Throwable 
 	{
 		setHeaders();
+		currentTime = System.currentTimeMillis();
 		response = RestClient.post(userCreds, reqHeader, "https://" + baseURL + "/login/check-login");
+		newCurrentTime = System.currentTimeMillis();
+		long timeDif = newCurrentTime - currentTime;
+		logger.info("response time: "+timeDif);
+		TSD_Injector.postResponseTimesToTSD(timeDif);
 	}
 	
 	@When("^I attempt to logout$")
 	public void i_return_to_tickmaster_login() throws Throwable 
+	{   
+		currentTime = System.currentTimeMillis();
+		//HTTPresponse = RestClient.get("https://" + baseURL + "/logout", reqHeader);
+		response = RestClient.getXML("https://access.ticketmaster.com/logout");
+		newCurrentTime = System.currentTimeMillis();
+		long timeDif = newCurrentTime - currentTime;
+		TSD_Injector.postResponseTimesToTSD(timeDif);
+	}
+	
+	@And("^the response code is success (\\d+) (?:Accepted|OK)$")
+	public void successResponseAccepted(int statusCode) throws Throwable 
 	{
-		resp = RestClient.get("https://" + baseURL + "/logout", reqHeader);
-		int returnedCode = resp.getStatusCode();
-		Assert.assertEquals(200, returnedCode);
+		int returnedCode = RESTActiveMonitoringStepDefs.response.getStatus();		
+	    Assert.assertEquals(statusCode, returnedCode);
 	}
 	
 	public void setHeaders()
