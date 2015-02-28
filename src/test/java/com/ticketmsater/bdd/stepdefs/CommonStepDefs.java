@@ -1,24 +1,18 @@
 package com.ticketmsater.bdd.stepdefs;
 
-import java.io.IOException;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
-import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
 
-import com.google.common.collect.ImmutableMap;
+
 import com.ticketmaster.bdd.util.DriverConfig;
-import com.ticketmaster.testclient.TestClient;
+import com.ticketmaster.bdd.util.TSD_Injector;
 
 //import cucumber.api.PendingException;
 import cucumber.api.Scenario;
@@ -56,7 +50,7 @@ public class CommonStepDefs
 	    long time = current2 - current;
 		
 		stepsPassed++;
-		postBrowserCallTimeToTSD(time, browser);
+		TSD_Injector.postBrowserCallTimeToTSD(time, browser);
 	}
 	
 	@And(value = "^I load (?:a|the) page", timeout = 60000) 
@@ -72,72 +66,10 @@ public class CommonStepDefs
 			logger.info("Webpage failed");
 		}
 	}
-	
-	@And("^the response code is success (\\d+) (?:Accepted|OK)$")
-	public void successResponseAccepted(int statusCode) throws Throwable 
-	{
-		int returnedCode = RESTActiveMonitoringStepDefs.response.getStatus();		
-	    Assert.assertEquals(statusCode, returnedCode);
-	}
-	
-	public void postStepsPassingToTSD(Integer stepsPassed) {
-		    long timestamp = System.currentTimeMillis() / 1000;
-		    ObjectMapper om = new ObjectMapper();
-		    Map<String, Object> metric = new HashMap<String, Object>();
-		    metric.put("metric", "chrome.grid.steps.passed");
-		    metric.put("timestamp", timestamp);
-		    metric.put("value", stepsPassed);
-		    metric.put("tags", ImmutableMap.of("host", "selenium.grid.beta"));
-		  
-		    String json;
-		    try {
-		      json = om.writeValueAsString(metric);
-		      logger.info(json);
-		     TestClient.post("http://tsd.dev.cloudsys.tmcs/api/put", json, "application/json");
-		    } catch (JsonGenerationException e) {
-		      // TODO Auto-generated catch block
-		      e.printStackTrace();
-		    } catch (JsonMappingException e) {
-		      // TODO Auto-generated catch block
-		      e.printStackTrace();
-		    } catch (IOException e) {
-		      // TODO Auto-generated catch block
-		      e.printStackTrace();
-		    }
-
-		  }
-
-		  private void postBrowserCallTimeToTSD(long millis, String browser) {
-		    long timestamp = System.currentTimeMillis() / 1000;
-
-		    ObjectMapper om = new ObjectMapper();
-		    Map<String, Object> metric = new HashMap<String, Object>();
-		    metric.put("metric", "chrome.grid.browser.instantiation.time");
-		    metric.put("timestamp", timestamp);
-		    metric.put("value", millis);
-		    metric.put("tags", ImmutableMap.of("host", "selenium.grid.beta"));
-		    metric.put("tags", ImmutableMap.of("browser", browser.replaceAll("\\s+", ".")));
-		    
-		    String json;
-		    try {
-		      json = om.writeValueAsString(metric);
-		      logger.info(json);
-		      TestClient.post("http://tsd.dev.cloudsys.tmcs/api/put", json, "application/json");
-		    } catch (JsonGenerationException e) {
-		      // TODO Auto-generated catch block
-		      e.printStackTrace();
-		    } catch (JsonMappingException e) {
-		      // TODO Auto-generated catch block
-		      e.printStackTrace();
-		    } catch (IOException e) {
-		      // TODO Auto-generated catch block
-		      e.printStackTrace();
-		    }
-		  }
-	
+		
 	 @After
-	  public void embedScreenshot(Scenario scenario) {
-	    postStepsPassingToTSD(stepsPassed);
+	  public void embedScreenshot(Scenario scenario) throws Exception {
+	    TSD_Injector.postStepsPassingToTSD(stepsPassed);
 	    for (byte[] screenshot : screenGrabs) {
 	      scenario.embed(screenshot, "image/png");
 	    }
