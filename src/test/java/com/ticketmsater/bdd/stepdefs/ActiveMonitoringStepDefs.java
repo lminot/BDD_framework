@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
 import junit.framework.TestCase;
 
 import org.eclipse.jetty.util.log.Log;
@@ -18,6 +19,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.ticketmaster.bdd.util.GetPropertyValue;
+import com.ticketmaster.bdd.util.TSD_Injector;
 
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
@@ -51,7 +53,7 @@ public class ActiveMonitoringStepDefs
 		elementPass.sendKeys(password);
 		
 		elementSign.click();
-		CommonStepDefs.stepsPassed++;
+		TSD_Injector.stepsPassed++;
 		/*
 		 * Check for layout format to determine future functionality
 		 */
@@ -90,14 +92,14 @@ public class ActiveMonitoringStepDefs
 		
 		elementLogDrop.click();
 		elementSignOut.click();
-		CommonStepDefs.stepsPassed++;
+		TSD_Injector.stepsPassed++;
 	}
 	
 	@Then("^I am on the login page$")
 	public void i_am_on_the_login_page() throws Throwable 
 	{
 		//embedScreenshot(null);
-		CommonStepDefs.stepsPassed++;
+		TSD_Injector.stepsPassed++;
 	}
 
 	@Then(value = "^search for the term \"([^\"]*)\"$", timeout = 60000)
@@ -115,7 +117,7 @@ public class ActiveMonitoringStepDefs
 			logger.info("Search submitted");
 			byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
 			screenGrabs.add(screenshot);
-			CommonStepDefs.stepsPassed++;
+			TSD_Injector.stepsPassed++;
 		} catch (Exception e) {
 			logger.warn(e.getMessage());
 			byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);

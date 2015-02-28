@@ -17,6 +17,7 @@ import com.ticketmsater.bdd.stepdefs.CommonStepDefs;
 public class TSD_Injector {
 	
 	static Logger logger = Log.getLogger(CommonStepDefs.class);
+	public static int stepsPassed = 0;
 	public long currentTime = 0;
 	public long newCurrentTime = 0;
 	

@@ -1,6 +1,5 @@
 package com.ticketmsater.bdd.stepdefs;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +13,6 @@ import org.openqa.selenium.WebDriver;
 import com.ticketmaster.bdd.util.DriverConfig;
 import com.ticketmaster.bdd.util.TSD_Injector;
 
-//import cucumber.api.PendingException;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.en.And;
@@ -31,7 +29,7 @@ public class CommonStepDefs
 	public static WebDriver driver;
 	public static String website;
 	
-	public static Integer stepsPassed = 0;
+	//public static Integer stepsPassed = 0;
 		
 	@Given("^that I have (?:loaded|navigated to) \"([^\"]*)\" in \"([^\"]*)\"$")
 	public void that_I_have_loaded_in_a(String website, String browser) throws Throwable 
@@ -49,7 +47,7 @@ public class CommonStepDefs
 		
 	    long time = current2 - current;
 		
-		stepsPassed++;
+		TSD_Injector.stepsPassed++;
 		TSD_Injector.postBrowserCallTimeToTSD(time, browser);
 	}
 	
@@ -60,7 +58,7 @@ public class CommonStepDefs
 			logger.info("Retrieving webpage");
 			driver.get("http://" + website);
 			logger.info("Webpage returned");
-			stepsPassed++;
+			TSD_Injector.stepsPassed++;
 		} catch (Exception e) {
 			TestCase.assertTrue(false);
 			logger.info("Webpage failed");
@@ -69,7 +67,7 @@ public class CommonStepDefs
 		
 	 @After
 	  public void embedScreenshot(Scenario scenario) throws Exception {
-	    TSD_Injector.postStepsPassingToTSD(stepsPassed);
+	    TSD_Injector.postStepsPassingToTSD(TSD_Injector.stepsPassed);
 	    for (byte[] screenshot : screenGrabs) {
 	      scenario.embed(screenshot, "image/png");
 	    }
