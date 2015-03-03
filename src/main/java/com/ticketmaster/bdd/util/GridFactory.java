@@ -49,7 +49,7 @@ public class GridFactory
 	 * @param capability
 	 * @return
 	 */
-	private WebDriver getBrowser(DesiredCapabilities capability)
+	private WebDriver getBrowser(DesiredCapabilities capability) throws ExecutionException
 	{	
 		//Given the local machine has its own grid to run off of
 		if(gridLoctaion.matches("localgrid"))
@@ -67,6 +67,19 @@ public class GridFactory
 			hubUrl = HUB_URL_PRIMARY_CHROME;
 			task = new BrowserCreate(capability, hubUrl);
 			future = executor.submit(task);
+			
+			//if the chromeGrid is down, default back to the grid
+			try{
+				driver = (WebDriver) future.get(GridFactory.TIMEOUT_SECONDS, TimeUnit.SECONDS);
+			}catch(Exception e)
+			{
+				logger.info("Browser is null, switch to backup Grid. Alerting team.");
+				System.out.println(HUB_URL_SECONDARY);
+				executor = Executors.newCachedThreadPool();
+				hubUrl = HUB_URL_SECONDARY;
+				task = new BrowserCreate(capability, hubUrl);
+				future = executor.submit(task);
+			}
 		}
 		//Active monitoring will contact the Grid for testing
 		else if (gridLoctaion.matches("grid"))
@@ -77,11 +90,14 @@ public class GridFactory
 			hubUrl = HUB_URL_SECONDARY;
 			task = new BrowserCreate(capability, hubUrl);
 			future = executor.submit(task);
+			
+			
 		}
 
 		try
 		{
 			driver = (WebDriver) future.get(GridFactory.TIMEOUT_SECONDS, TimeUnit.SECONDS);
+			
 		}
 		catch (TimeoutException ex)
 		{
@@ -97,6 +113,7 @@ public class GridFactory
 		}
 		
 		driver.manage().window().maximize();
+		
 		return driver;
 	}
 
