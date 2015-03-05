@@ -75,14 +75,14 @@ public class GridFactory
 			hubUrl = HUB_URL_SECONDARY;
 			gridExecutor(capability);			
 		}
-		//if the chromeGrid is down, default back to the grid
+		//If the chromeGrid is down, default back to the grid
 		if(driver == null){
 			try {
 				driver = (WebDriver) future.get(GridFactory.TIMEOUT_SECONDS, TimeUnit.SECONDS);
 				
 			} catch(Exception e) {
 				logger.info("Browser is null, switch to backup Grid.");
-				System.out.println(HUB_URL_SECONDARY);
+				System.out.println("Grid URL: "+HUB_URL_SECONDARY);
 				hubUrl = HUB_URL_SECONDARY;
 				gridExecutor(capability);
 			}		
