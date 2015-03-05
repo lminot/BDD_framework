@@ -26,14 +26,16 @@ public class GridFactory
 {
 	private Logger logger = Log.getLogger(GridFactory.class);
 	
-	private static final String configPropertyFilePath = "src/test/resources/config.properties";
-	private static final String HUB_URL_PRIMARY = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "localgrid");
-	private static final String HUB_URL_PRIMARY_CHROME = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "chromeGrid");
-	private static final String HUB_URL_SECONDARY = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "grid");
-	private static final String HUB_URL_QUEBEC = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "quebecGrid");
-	private static final String configLocatorFilePath = "src/test/resources/locators.properties";
 	public String gridLoctaion = GetPropertyValue.getValueFromPropertyFile(configLocatorFilePath, "location");
 	
+	private static final String configPropertyFilePath = "src/test/resources/config.properties";
+	private static final String configLocatorFilePath = "src/test/resources/locators.properties";
+	
+	private static final String HUB_URL_PRIMARY = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "localgrid");
+	private static final String HUB_URL_SECONDARY = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "grid");
+	private static final String HUB_URL_PRIMARY_CHROME = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "chromeGrid");
+	private static final String HUB_URL_QUEBEC = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "quebecGrid");
+
 	WebDriver driver = null;
 	public Future<Object> future;
 	public Callable<Object> task;
