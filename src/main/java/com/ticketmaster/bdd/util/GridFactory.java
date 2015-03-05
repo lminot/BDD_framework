@@ -30,6 +30,7 @@ public class GridFactory
 	private static final String HUB_URL_PRIMARY = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "localgrid");
 	private static final String HUB_URL_PRIMARY_CHROME = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "chromeGrid");
 	private static final String HUB_URL_SECONDARY = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "grid");
+	private static final String HUB_URL_QUEBEC = GetPropertyValue.getValueFromPropertyFile(configPropertyFilePath, "quebecGrid");
 	private static final String configLocatorFilePath = "src/test/resources/locators.properties";
 	public String gridLoctaion = GetPropertyValue.getValueFromPropertyFile(configLocatorFilePath, "location");
 	
@@ -51,67 +52,64 @@ public class GridFactory
 	 */
 	private WebDriver getBrowser(DesiredCapabilities capability) throws ExecutionException
 	{	
-		//Given the local machine has its own grid to run off of
-		if(gridLoctaion.matches("localgrid"))
-		{
+		//Given the local machine has its own grid to run off of from https://github.com/groupon/Selenium-Grid-Extras
+		if(gridLoctaion.matches("localgrid")) {
 			System.out.println(HUB_URL_PRIMARY);
 			executor = Executors.newCachedThreadPool();
 			hubUrl = HUB_URL_PRIMARY;
 			task = new BrowserCreate(capability, hubUrl);
 			future = executor.submit(task);
 		}
-		else if(gridLoctaion.matches("chromeGrid"))
-		{
+		else if(gridLoctaion.matches("chromeGrid")) {
 			System.out.println(HUB_URL_PRIMARY_CHROME);
 			executor = Executors.newCachedThreadPool();
 			hubUrl = HUB_URL_PRIMARY_CHROME;
 			task = new BrowserCreate(capability, hubUrl);
-			future = executor.submit(task);
-			
-			//if the chromeGrid is down, default back to the grid
-			try{
-				driver = (WebDriver) future.get(GridFactory.TIMEOUT_SECONDS, TimeUnit.SECONDS);
-			}catch(Exception e)
-			{
-				logger.info("Browser is null, switch to backup Grid. Alerting team.");
-				System.out.println(HUB_URL_SECONDARY);
-				executor = Executors.newCachedThreadPool();
-				hubUrl = HUB_URL_SECONDARY;
-				task = new BrowserCreate(capability, hubUrl);
-				future = executor.submit(task);
-			}
+			future = executor.submit(task);	
+		}
+		else if(gridLoctaion.matches("quebecGrid")) {
+			System.out.println(HUB_URL_QUEBEC);
+			executor = Executors.newCachedThreadPool();
+			hubUrl = HUB_URL_QUEBEC;
+			task = new BrowserCreate(capability, hubUrl);
+			future = executor.submit(task);		
 		}
 		//Active monitoring will contact the Grid for testing
-		else if (gridLoctaion.matches("grid"))
-		{
+		else if (gridLoctaion.matches("grid")) {
 			logger.info("Browser is null, switch to backup Grid. Alerting team.");
 			System.out.println(HUB_URL_SECONDARY);
 			executor = Executors.newCachedThreadPool();
 			hubUrl = HUB_URL_SECONDARY;
 			task = new BrowserCreate(capability, hubUrl);
 			future = executor.submit(task);
-			
-			
+					
+		}
+		//if the chromeGrid is down, default back to the grid
+		if(driver == null){
+			try{
+				driver = (WebDriver) future.get(GridFactory.TIMEOUT_SECONDS, TimeUnit.SECONDS);
+			} catch(Exception e) {
+				logger.info("Browser is null, switch to backup Grid. Alerting team.");
+				System.out.println(HUB_URL_SECONDARY);
+				executor = Executors.newCachedThreadPool();
+				hubUrl = HUB_URL_SECONDARY;
+				task = new BrowserCreate(capability, hubUrl);
+				future = executor.submit(task);
+			}		
 		}
 
-		try
-		{
-			driver = (WebDriver) future.get(GridFactory.TIMEOUT_SECONDS, TimeUnit.SECONDS);
-			
+		try {
+			driver = (WebDriver) future.get(GridFactory.TIMEOUT_SECONDS, TimeUnit.SECONDS);		
 		}
-		catch (TimeoutException ex)
-		{
-				logger.warn("Timed out");
+		catch (TimeoutException ex) {
+			logger.warn("Timed out");
 		}
-		catch (InterruptedException e)
-		{
+		catch (InterruptedException e) {
 			logger.warn(e.getMessage());
 		}
-		catch (ExecutionException e)
-		{
+		catch (ExecutionException e) {
 			logger.warn(e.getMessage());
 		}
-		
 		driver.manage().window().maximize();
 		
 		return driver;
