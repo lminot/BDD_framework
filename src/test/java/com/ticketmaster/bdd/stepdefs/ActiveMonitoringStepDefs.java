@@ -1,4 +1,4 @@
-package com.ticketmsater.bdd.stepdefs;
+package com.ticketmaster.bdd.stepdefs;
 
 import java.util.ArrayList;
 import java.util.List;

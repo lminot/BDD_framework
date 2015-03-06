@@ -1,4 +1,4 @@
-package com.ticketmsater.bdd.stepdefs;
+package com.ticketmaster.bdd.stepdefs;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,10 +36,11 @@ public class RESTActiveMonitoringStepDefs
 	@Given("^I execute a POST to login to tm360$")
 	public void i_execute_a_POST_to_the_ticketmaster_login() throws Throwable 
 	{
-		setHeaders();
+		//setHeaders();
 		currentTime = System.currentTimeMillis();
 		response = RestClient.post(userCreds, reqHeader, "https://" + baseURL + "/login/check-login");
 		newCurrentTime = System.currentTimeMillis();
+		
 		long timeDif = newCurrentTime - currentTime;
 		logger.info("response time: "+timeDif);
 		TSD_Injector.postResponseTimesToTSD(timeDif);
@@ -53,7 +54,7 @@ public class RESTActiveMonitoringStepDefs
 		response = RestClient.getXML("https://access.ticketmaster.com/logout");
 		newCurrentTime = System.currentTimeMillis();
 		long timeDif = newCurrentTime - currentTime;
-		TSD_Injector.postResponseTimesToTSD(timeDif);
+		//TSD_Injector.postResponseTimesToTSD(timeDif);
 	}
 	
 	@And("^the response code is success (\\d+) (?:Accepted|OK)$")
@@ -63,9 +64,9 @@ public class RESTActiveMonitoringStepDefs
 	    Assert.assertEquals(statusCode, returnedCode);
 	}
 	
-	public void setHeaders()
-	{
-		reqHeader.put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
-		reqHeader.put("Accept-Encoding", "gzip, deflate");
-	}
+//	public void setHeaders()
+//	{
+//		reqHeader.put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+//		reqHeader.put("Accept-Encoding", "gzip, deflate");
+//	}
 }

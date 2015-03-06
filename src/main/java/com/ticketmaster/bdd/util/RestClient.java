@@ -36,6 +36,20 @@ public class RestClient {
 		 req.setHeaders(header);
 		 req.setUrl(url1);
 		 resp = httpclient.execute(req);
+		
+		 
+		 return resp ;
+	}
+	
+	public static HTTPResponse postHTTP(String url, Map header, String requestBody) throws Exception
+	{ 
+		 URL url1 = new URL(url);
+		 req.setMethod(HTTPMethod.POST);
+		 req.setHeaders(header);
+		 req.setUrl(url1);
+		 req.setMethod(HTTPMethod.valueOf(requestBody));
+		 resp = httpclient.execute(req);
+		
 		 
 		 return resp ;
 	}

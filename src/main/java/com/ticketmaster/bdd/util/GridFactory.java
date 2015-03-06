@@ -55,17 +55,17 @@ public class GridFactory
 	private WebDriver getBrowser(DesiredCapabilities capability) throws ExecutionException
 	{	
 		//Given the local machine has its own grid to run off of from https://github.com/groupon/Selenium-Grid-Extras
-		if(gridLoctaion.matches("localgrid")) {
+		if (gridLoctaion.matches("localgrid")) {
 			System.out.println("Grid URL: "+HUB_URL_PRIMARY);
 			hubUrl = HUB_URL_PRIMARY;
 			gridExecutor(capability);
 		}
-		else if(gridLoctaion.matches("chromeGrid")) {
+		else if (gridLoctaion.matches("chromeGrid")) {
 			System.out.println("Grid URL: "+HUB_URL_PRIMARY_CHROME);
 			hubUrl = HUB_URL_PRIMARY_CHROME;
 			gridExecutor(capability);	
 		}
-		else if(gridLoctaion.matches("quebecGrid")) {
+		else if (gridLoctaion.matches("quebecGrid")) {
 			System.out.println("Grid URL: "+HUB_URL_QUEBEC);
 			hubUrl = HUB_URL_QUEBEC;
 			gridExecutor(capability);		
@@ -76,7 +76,7 @@ public class GridFactory
 			gridExecutor(capability);			
 		}
 		//If the chromeGrid is down, default back to the grid
-		if(driver == null){
+		if (driver == null){
 			try {
 				driver = (WebDriver) future.get(GridFactory.TIMEOUT_SECONDS, TimeUnit.SECONDS);
 				

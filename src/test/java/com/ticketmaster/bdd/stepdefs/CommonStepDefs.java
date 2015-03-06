@@ -1,4 +1,4 @@
-package com.ticketmsater.bdd.stepdefs;
+package com.ticketmaster.bdd.stepdefs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +67,7 @@ public class CommonStepDefs
 		
 	 @After
 	  public void embedScreenshot(Scenario scenario) throws Exception {
-	    TSD_Injector.postStepsPassingToTSD(TSD_Injector.stepsPassed);
+	    //TSD_Injector.postStepsPassingToTSD(TSD_Injector.stepsPassed);
 	    for (byte[] screenshot : screenGrabs) {
 	      scenario.embed(screenshot, "image/png");
 	    }
