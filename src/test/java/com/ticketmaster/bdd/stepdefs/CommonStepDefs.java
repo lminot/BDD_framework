@@ -10,8 +10,10 @@ import org.eclipse.jetty.util.log.Logger;
 import org.openqa.selenium.WebDriver;
 
 
+
 import com.ticketmaster.bdd.util.DriverConfig;
 import com.ticketmaster.bdd.util.TSD_Injector;
+import com.ticketmaster.bdd.util.CommonUtil;
 
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
@@ -64,7 +66,12 @@ public class CommonStepDefs
 			logger.info("Webpage failed");
 		}
 	}
-		
+	
+	 @And("^sleep for (.*) minutes*$")
+	 public void sleepFunc(int x) throws Throwable {
+		 CommonUtil.sleepForXMinutes(x);	
+	 }
+	 
 	 @After
 	  public void embedScreenshot(Scenario scenario) throws Exception {
 	    //TSD_Injector.postStepsPassingToTSD(TSD_Injector.stepsPassed);
