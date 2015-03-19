@@ -30,7 +30,6 @@ public class CommonStepDefs
 	
 	public static WebDriver driver;
 	public static String website;
-	
 	//public static Integer stepsPassed = 0;
 		
 	@Given("^that I have (?:loaded|navigated to) \"([^\"]*)\" in \"([^\"]*)\"$")
