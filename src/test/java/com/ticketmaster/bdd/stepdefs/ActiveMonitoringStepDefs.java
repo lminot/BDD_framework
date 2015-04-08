@@ -83,9 +83,9 @@ public class ActiveMonitoringStepDefs
        
 		if( layout.matches("topNav") )
 		{
-			elementLogDrop = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(userDrop)));
-			elementLogDrop = driver.findElement(By.xpath(userDrop));
-			elementSignOut = driver.findElement(By.xpath(signOut));
+			elementLogDrop = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(userDrop)));
+			elementLogDrop = driver.findElement(By.cssSelector(userDrop));
+			elementSignOut = driver.findElement(By.cssSelector(signOut));
 		}
 		
 		//TODO code for SideNav layout

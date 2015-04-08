@@ -17,6 +17,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 public class LocalBrowser
 {
 	private WebDriver driver;
+	private OSValidator osValidator = new OSValidator();
 	
 	public void initLocalChrome() throws Exception {
 

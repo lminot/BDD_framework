@@ -10,7 +10,7 @@ import cucumber.api.junit.Cucumber;
 		format={"pretty", "html:target/results", "json:target/results.json"},
 		features="src/test/resources/com/ticketmaster/bdd",
 		glue={"com.ticketmaster.bdd"},
-		tags={"@am-rest-login"}
+		tags={"@tm360-login"}
 		)
 		//@tm360-login, @am-rest-login
 public class TestRunner {
