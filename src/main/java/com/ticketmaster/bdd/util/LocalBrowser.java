@@ -23,7 +23,6 @@ public class LocalBrowser
 	Logger logger = Log.getLogger(LocalBrowser.class);
 	
 	private WebDriver driver;
-	private OSValidator osValidator = new OSValidator();
 	
 	public void initLocalChrome() throws Exception {
 
@@ -33,7 +32,7 @@ public class LocalBrowser
 		
 		if(OSValidator.isMac())
 		{
-			System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+			System.setProperty("webdriver.chrome.driver", "chromedriver");
 			logger.info("Using mac driver.");
 		}
 		else if(OSValidator.isWindows())
