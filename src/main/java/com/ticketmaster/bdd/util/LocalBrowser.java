@@ -2,12 +2,16 @@ package com.ticketmaster.bdd.util;
 
 import java.io.File;
 
+import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+
+import com.ticketmaster.bdd.stepdefs.CommonStepDefs;
 
 /**
  * Initializing local machine browser driver
@@ -16,6 +20,8 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  */
 public class LocalBrowser
 {
+	Logger logger = Log.getLogger(LocalBrowser.class);
+	
 	private WebDriver driver;
 	private OSValidator osValidator = new OSValidator();
 	
@@ -24,7 +30,18 @@ public class LocalBrowser
 		DesiredCapabilities capability = DesiredCapabilities.chrome();
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--start-maximized");
-		System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+		
+		if(OSValidator.isMac())
+		{
+			System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+			logger.info("Using mac driver.");
+		}
+		else if(OSValidator.isWindows())
+		{
+			System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+			logger.info("Using windows driver.");
+		}	
+		
 		capability.setCapability(ChromeOptions.CAPABILITY, options);
 		capability.setCapability("takeScreenshot", true);
 		driver = new ChromeDriver(capability);	
