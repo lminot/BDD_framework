@@ -30,16 +30,16 @@ public class LocalBrowser
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--start-maximized");
 		
-		if(OSValidator.isMac())
+		if(OSValidator.isWindows())
+		{
+			System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+			logger.info("Using windows driver.");
+		}
+		else if(OSValidator.isMac())
 		{
 			System.setProperty("webdriver.chrome.driver", "chromedriver");
 			logger.info("Using mac driver.");
 		}
-		else if(OSValidator.isWindows())
-		{
-			System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
-			logger.info("Using windows driver.");
-		}	
 		
 		capability.setCapability(ChromeOptions.CAPABILITY, options);
 		capability.setCapability("takeScreenshot", true);
