@@ -3,8 +3,8 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://git.tm.tmcs/platform/platform-xml-schema/zabbix http://git.tm.tmcs/platform/platform-xml-schema/raw/master/src/main/resources/xsd/zabbix/zabbix-2.2.0.xsd">
     <!--Please visit https://contegixapp1.livenation.com/confluence/display/PLEN/Using+QADash+UI+to+create+zabbix.xml to generate your zabbix.xml-->
-    <server_class>app</server_class>
-    <server_product>tma</server_product>
+    <!-- <server_class>app</server_class> --> 
+    <!--<server_product>tma</server_product>  -->
     <distro_list>Lucien.Minot@Ticketmaster.com;Nihar.Amin@Ticketmaster.com;DerickCornejo@LiveNation.com</distro_list>
     <runbook_url>https://contegixapp1.livenation.com/confluence/display/MY_TEAM/Runbook</runbook_url>
     <healthcheck>true</healthcheck>
@@ -12,6 +12,7 @@
     <healthcheck_url>https://access.ticketmaster.com/health/healthcheck</healthcheck_url>
     <!-- Optional tag for defining number of failed healthchecks before sending alerts. Defaulted to 1 if not set -->
     <!--<healthcheck_retry_count>1</healthcheck_retry_count>-->
+    <healthcheck_retry_count>5</healthcheck_retry_count>
     <oncall_group>Quality Engineering Hollywood</oncall_group>
     <enable_TOC_alerts_prod>false</enable_TOC_alerts_prod>
     <enable_TOC_alerts_int>false</enable_TOC_alerts_int>
