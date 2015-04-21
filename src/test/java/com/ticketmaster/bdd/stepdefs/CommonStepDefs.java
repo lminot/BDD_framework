@@ -11,7 +11,10 @@ import org.openqa.selenium.WebDriver;
 
 
 
+
+
 import com.ticketmaster.bdd.util.DriverConfig;
+import com.ticketmaster.bdd.util.BrowserDriver;
 import com.ticketmaster.bdd.util.TSD_Injector;
 import com.ticketmaster.bdd.util.CommonUtil;
 
@@ -72,15 +75,12 @@ public class CommonStepDefs
 	 }
 	 
 	 @After
-	  public void embedScreenshot(Scenario scenario) throws Exception {
+	  public void embedScreenshot(Scenario scenario) throws Throwable {
 	    //TSD_Injector.postStepsPassingToTSD(TSD_Injector.stepsPassed);
 	    for (byte[] screenshot : screenGrabs) {
 	      scenario.embed(screenshot, "image/png");
 	    }
-	    if (driver != null){
-	      driver.close();
-	      driver.quit();
-	    }
+	    CommonUtil.killSession(driver);
 	  }
 	 
    }

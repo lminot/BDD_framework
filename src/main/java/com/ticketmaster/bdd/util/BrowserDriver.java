@@ -11,16 +11,14 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import com.ticketmaster.bdd.stepdefs.CommonStepDefs;
-
 /**
  * Initializing local machine browser driver
  * In Active Monitoring, local drivers are included in project
  * @author Derick.Cornejo
  */
-public class LocalBrowser
+public class BrowserDriver
 {
-	Logger logger = Log.getLogger(LocalBrowser.class);
+	Logger logger = Log.getLogger(BrowserDriver.class);
 	
 	private WebDriver driver;
 	
@@ -30,6 +28,7 @@ public class LocalBrowser
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--start-maximized");
 		
+		// Validates which chromedriver to use based on mac or windows OS
 			if (OSValidator.isWindows()) {
 				System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
 				logger.info("Using windows chromedriver driver.");
